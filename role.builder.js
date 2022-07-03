@@ -12,7 +12,7 @@ var roleBuilder = {
             creep.say('🚧 build');
         }
         
-        const repairtargets = creep.room.find(FIND_STRUCTURES, {
+        const repairtargets = creep.room.find(FIND_MY_STRUCTURES, {
             filter: object => object.hits < object.hitsMax
         });
         if(creep.memory.building != 'repairing' && creep.store.getFreeCapacity() == 0 && repairtargets.length > 0){
