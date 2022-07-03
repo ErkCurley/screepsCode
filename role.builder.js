@@ -3,16 +3,32 @@ var roleBuilder = {
     /** @param {Creep} creep **/
     run: function(creep) {
 
-        if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
-            creep.memory.building = false;
-            creep.say('🌲 harvest');
+        if(creep.memory.building != 'harvesting' && creep.store[RESOURCE_ENERGY] == 0) {
+            creep.memory.building = 'harvesting';
+            creep.say('🔄 harvest');
         }
-        if(!creep.memory.building && creep.store.getFreeCapacity() == 0) {
-            creep.memory.building = true;
+        if(!creep.memory.building != 'building' && creep.store.getFreeCapacity() == 0) {
+            creep.memory.building = 'building';
             creep.say('🚧 build');
         }
+        
+        const repairtargets = creep.room.find(FIND_STRUCTURES, {
+            filter: object => object.hits < object.hitsMax
+        });
+        if(creep.memory.building != 'repairing' && creep.store.getFreeCapacity() == 0 && repairtargets.length > 0){
+            creep.memory.building = 'repairing';
+            creep.say('🔄 harvest');
 
-        if(creep.memory.building) {
+            repairtargets.sort((a,b) => a.hits - b.hits);
+
+            if(repairtargets.length > 0) {
+                creep.memory.building = 'repairing';
+            }
+        }
+        
+
+
+        if(creep.memory.building == 'building') {
             var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
             if(targets.length) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
@@ -25,10 +41,26 @@ var roleBuilder = {
                 creep.moveTo((spawnSpots[0].pos.x + 1, spawnSpots[0].pos.y), {visualizePathStyle: {stroke: '#ffffff'}})
             }
         }
-        else {
-            var sources = creep.room.find(FIND_SOURCES);
-            if(creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+        if(creep.memory.building == 'harvesting') {
+            var energyStores = creep.room.find(FIND_STRUCTURES, {
+                filter: (structure) => {
+                    return (structure.structureType == STRUCTURE_EXTENSION ||
+                        structure.structureType == STRUCTURE_SPAWN ) &&
+                        structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity();
+                }
+            });
+            
+            if(energyStores.length > 0){
+                response = creep.withdraw(energyStores[0], RESOURCE_ENERGY);
+                if(response == ERR_NOT_IN_RANGE) {
+                  creep.moveTo(energyStores[0]);
+                }    
+            }
+            
+        }
+        if(creep.memory.building == 'repairing') {
+            if(creep.repair(repairtargets[0]) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(repairtargets[0]);
             }
         }
     }
