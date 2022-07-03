@@ -52,17 +52,17 @@ module.exports.loop = function () {
             filter: { structureType: STRUCTURE_CONTAINER }
         });
         if (containers.length < 5 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9){
-            console.log("Creating Storage");
+            // console.log("Creating Storage");
             const construction_sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES,{
                 filter: { structureType: STRUCTURE_CONTAINER }
             });
             
             if(construction_sites.length == 0 && containers.length > 0){
                 var response =  Game.spawns[spawnName].room.createConstructionSite(constainers[containers.length - 1].pos.x + 1, constainers[containers.length - 1].pos.y + 1, STRUCTURE_CONTAINER);
-                console.log(response)
+                // console.log(response)
             }else if (construction_sites.length == 0 && containers.length == 0){
                 var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y + 2, STRUCTURE_CONTAINER);
-                console.log(response)
+                // console.log(response)
             }
         }
         
@@ -70,17 +70,17 @@ module.exports.loop = function () {
             filter: { structureType: STRUCTURE_EXTENSION }
         });
         if (extensions.length < 10 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9){
-            console.log("Creating Extension");
+            // console.log("Creating Extension");
             const construction_sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES,{
                 filter: { structureType: STRUCTURE_EXTENSION }
             });
             
             if(construction_sites.length == 0 && extensions.length > 0){
                 var response =  Game.spawns[spawnName].room.createConstructionSite(extensions[extensions.length - 1].pos.x - 1, extensions[extensions.length - 1].pos.y + 1, STRUCTURE_EXTENSION);
-                console.log(response)
+                // console.log(response)
             }else if (construction_sites.length == 0 && extensions.length == 0){
                 var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION);
-                console.log(response)
+                // console.log(response)
             }
         }
     
