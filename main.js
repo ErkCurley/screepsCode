@@ -67,7 +67,8 @@ module.exports.loop = function () {
             });
             
             if(construction_sites.length == 0 && containers.length > 0){
-                var response =  Game.spawns[spawnName].room.createConstructionSite(constainers[containers.length - 1].pos.x + 1, constainers[containers.length - 1].pos.y + 1, STRUCTURE_CONTAINER);
+                console.log("Trying to build container")
+                var response =  Game.spawns[spawnName].room.createConstructionSite(constainers[containers.length - 1].pos.x + 1, constainers[containers.length - 1].pos.y, STRUCTURE_CONTAINER);
                 // console.log(response)
             }else if (construction_sites.length == 0 && containers.length == 0){
                 var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y + 2, STRUCTURE_CONTAINER);
@@ -106,7 +107,7 @@ module.exports.loop = function () {
 
 
 
-    if(harvesters.length <= 4) {
+    if(harvesters.length < 1) {
         var newName = 'Harvester' + Game.time;
         var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
         var target = getRndInteger(0,sources.length);
@@ -114,11 +115,38 @@ module.exports.loop = function () {
         Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE], newName,
             {memory: {role: 'harvester', sourceTarget: target}});
     }
+    
+    if(harvesters.length == 2) {
+        var newName = 'Harvester' + Game.time;
+        var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+        var target = getRndInteger(0,sources.length);
+        console.log('Spawning new harvester: ' + newName);
+        Game.spawns[spawnName].spawnCreep([WORK,CARRY,CARRY,CARRY,MOVE], newName,
+            {memory: {role: 'harvester', sourceTarget: target}});
+    }
+    
+    if(harvesters.length == 3) {
+        var newName = 'Harvester' + Game.time;
+        var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+        var target = getRndInteger(0,sources.length);
+        console.log('Spawning new harvester: ' + newName);
+        Game.spawns[spawnName].spawnCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE], newName,
+            {memory: {role: 'harvester', sourceTarget: target}});
+    }
+    
+    if(harvesters.length == 4) {
+        var newName = 'Harvester' + Game.time;
+        var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+        var target = getRndInteger(0,sources.length);
+        console.log('Spawning new harvester: ' + newName);
+        Game.spawns[spawnName].spawnCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE], newName,
+            {memory: {role: 'harvester', sourceTarget: target}});
+    }
 
     if(upgraders.length < 3 && harvesters.length >= 2) {
         var newName = 'Upgrader' + Game.time;
         console.log('Spawning new upgrader: ' + newName);
-        Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE], newName,
+        Game.spawns[spawnName].spawnCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE], newName,
             {memory: {role: 'upgrader', upgrading: true}});
     }
     
