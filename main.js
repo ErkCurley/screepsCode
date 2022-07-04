@@ -139,7 +139,7 @@ module.exports.loop = function () {
         }
     }
 
-    if(harvesters.length < 1) {
+    if(harvesters.length <= 1) {
         makeNewCreep('harvester',[WORK,CARRY,MOVE])
     }
     
