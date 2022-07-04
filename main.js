@@ -8,6 +8,23 @@ function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
 
+function buildRoads(){
+    var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+    for (let i = 0; i < sources.length; i++) {
+        var paths = PathFinder.search(Game.spawns[spawnName].pos,sources[i].pos);
+        for (let i = 0; i < paths.path.length; i++) {
+            console.log("Placing Road")
+            Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
+        }
+    }
+    
+    var paths = PathFinder.search(Game.spawns[spawnName].pos,Game.spawns[spawnName].room.controller.pos);
+    
+    for (let i = 0; i < paths.path.length; i++) {
+        console.log("Placing Road")
+        Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
+    }
+}
 module.exports.loop = function () {
 
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
@@ -16,6 +33,13 @@ module.exports.loop = function () {
     //console.log('Ugraders: ' + upgraders.length);    
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     //console.log('Builders: ' + builders.length);
+    
+    const roads = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
+                filter: { structureType: STRUCTURE_TOWER }
+            });
+    if(roads.length == 0){
+        buildRoads()
+    }
     
     
     if (Game.spawns[spawnName].room.controller.level >= 3){
