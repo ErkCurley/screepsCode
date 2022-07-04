@@ -13,7 +13,6 @@ function buildRoads(){
     for (let i = 0; i < sources.length; i++) {
         var paths = PathFinder.search(Game.spawns[spawnName].pos,sources[i].pos);
         for (let i = 0; i < paths.path.length; i++) {
-            console.log("Placing Road")
             Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
         }
     }
@@ -21,7 +20,6 @@ function buildRoads(){
     var paths = PathFinder.search(Game.spawns[spawnName].pos,Game.spawns[spawnName].room.controller.pos);
     
     for (let i = 0; i < paths.path.length; i++) {
-        console.log("Placing Road")
         Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
     }
 }
@@ -32,7 +30,7 @@ function makeNewCreep(role,parts){
         var target = getRndInteger(0,sources.length);
         console.log('Spawning new '+role+': ' + newName);
         Game.spawns[spawnName].spawnCreep(parts, newName,
-            {memory: {role: role, sourceTarget: target}});
+            {memory: {role: role, sourceTarget: sources[target]}});
 }
 
 
