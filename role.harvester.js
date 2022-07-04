@@ -28,7 +28,7 @@ var roleHarvester = {
                 }
             });
             
-            if(targets.length > 0) {
+            if(targets.length == 0) {
                 var targets = creep.room.find(FIND_STRUCTURES, {
                     filter: (structure) => {
                         return (structure.structureType == STRUCTURE_CONTAINER) &&
