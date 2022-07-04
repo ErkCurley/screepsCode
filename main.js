@@ -151,7 +151,7 @@ module.exports.loop = function () {
         makeNewCreep('harvester',[WORK,CARRY,CARRY,CARRY,MOVE])
     }
     
-    if(harvesters.length == 4) {
+    if(harvesters.length >= 4 && harvesters.length < 6) {
         makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE])
     }
 
