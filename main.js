@@ -25,6 +25,18 @@ function buildRoads(){
         Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
     }
 }
+
+function makeNewCreep(role,parts){
+        var newName = role + Game.time;
+        var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+        var target = getRndInteger(0,sources.length);
+        console.log('Spawning new '+role+': ' + newName);
+        Game.spawns[spawnName].spawnCreep(parts, newName,
+            {memory: {role: role, sourceTarget: target}});
+}
+
+
+
 module.exports.loop = function () {
 
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
@@ -129,42 +141,20 @@ module.exports.loop = function () {
         }
     }
 
-
-
     if(harvesters.length < 1) {
-        var newName = 'Harvester' + Game.time;
-        var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
-        var target = getRndInteger(0,sources.length);
-        console.log('Spawning new harvester: ' + newName);
-        Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE], newName,
-            {memory: {role: 'harvester', sourceTarget: target}});
+        makeNewCreep('harvester',[WORK,CARRY,MOVE])
     }
     
     if(harvesters.length == 2) {
-        var newName = 'Harvester' + Game.time;
-        var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
-        var target = getRndInteger(0,sources.length);
-        console.log('Spawning new harvester: ' + newName);
-        Game.spawns[spawnName].spawnCreep([WORK,CARRY,CARRY,CARRY,MOVE], newName,
-            {memory: {role: 'harvester', sourceTarget: target}});
+        makeNewCreep('harvester',[WORK,CARRY,CARRY,MOVE])
     }
     
     if(harvesters.length == 3) {
-        var newName = 'Harvester' + Game.time;
-        var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
-        var target = getRndInteger(0,sources.length);
-        console.log('Spawning new harvester: ' + newName);
-        Game.spawns[spawnName].spawnCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE], newName,
-            {memory: {role: 'harvester', sourceTarget: target}});
+        makeNewCreep('harvester',[WORK,CARRY,CARRY,CARRY,MOVE])
     }
     
     if(harvesters.length == 4) {
-        var newName = 'Harvester' + Game.time;
-        var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
-        var target = getRndInteger(0,sources.length);
-        console.log('Spawning new harvester: ' + newName);
-        Game.spawns[spawnName].spawnCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE], newName,
-            {memory: {role: 'harvester', sourceTarget: target}});
+        makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE])
     }
 
     if(upgraders.length < 3 && harvesters.length >= 2) {
