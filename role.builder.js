@@ -2,22 +2,19 @@ var roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-
-        if(creep.memory.building != 'harvesting' && creep.store[RESOURCE_ENERGY] == 0) {
-            creep.memory.building = 'harvesting';
-            creep.say('🔄 harvest');
-        }
-        if(!creep.memory.building != 'building' && creep.store.getFreeCapacity() == 0) {
+        
+        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+        if(!creep.memory.building != 'building' && targets.length > 0 && creep.store[RESOURCE_ENERGY] > 0) {
             creep.memory.building = 'building';
             creep.say('🚧 build');
         }
-        
+
         const repairtargets = creep.room.find(FIND_STRUCTURES, {
             filter: object => object.hits < object.hitsMax
         });
-        if(creep.memory.building != 'repairing' && creep.store.getFreeCapacity() == 0 && repairtargets.length > 0){
+        if(creep.memory.building != 'repairing' && repairtargets.length > 0){
             creep.memory.building = 'repairing';
-            creep.say('🔄 harvest');
+            creep.say('🔄 repair');
 
             repairtargets.sort((a,b) => a.hits - b.hits);
 
@@ -26,11 +23,15 @@ var roleBuilder = {
             }
         }
         
+        if(creep.memory.building != 'harvesting' && creep.store[RESOURCE_ENERGY] == 0) {
+            creep.memory.building = 'harvesting';
+            creep.say('🔄 harvest');
+        }
+        
 
 
         if(creep.memory.building == 'building') {
-            var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-            if(targets.length) {
+            if(targets.length > 0) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
@@ -45,7 +46,8 @@ var roleBuilder = {
             var energyStores = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
-                        structure.structureType == STRUCTURE_SPAWN ) &&
+                        structure.structureType == STRUCTURE_SPAWN ||
+                        structure.structureType == STRUCTURE_CONTAINER) &&
                         structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity();
                 }
             });
