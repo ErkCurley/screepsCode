@@ -91,12 +91,12 @@ module.exports.loop = function () {
     }
     
     if(harvesters.length == 4){
-     const containers = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
+     const containers = Game.spawns[spawnName].room.find(FIND_STRUCTURES, {
             filter: { structureType: STRUCTURE_CONTAINER }
         });
         if (containers.length < 5 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9){
             // console.log("Creating Storage");
-            const construction_sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES,{
+            const construction_sites = Game.spawns[spawnName].room.find(FIND_CONSTRUCTION_SITES,{
                 filter: { structureType: STRUCTURE_CONTAINER }
             });
             
