@@ -90,7 +90,7 @@ module.exports.loop = function () {
         }
     }
     
-    if(harvesters.length == 4){
+    if(harvesters.length >= 4){
      const containers = Game.spawns[spawnName].room.find(FIND_STRUCTURES, {
             filter: { structureType: STRUCTURE_CONTAINER }
         });
