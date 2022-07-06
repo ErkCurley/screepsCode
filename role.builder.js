@@ -43,6 +43,7 @@ var roleBuilder = {
             }
         }
         if(creep.memory.building == 'harvesting') {
+            var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
             var energyStores = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_EXTENSION ||
@@ -52,7 +53,7 @@ var roleBuilder = {
                 }
             });
             
-            if(energyStores.length > 0){
+            if(energyStores.length > 0 && harvesters.length >= 2){
                 response = creep.withdraw(energyStores[0], RESOURCE_ENERGY);
                 if(response == ERR_NOT_IN_RANGE) {
                   creep.moveTo(energyStores[0]);

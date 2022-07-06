@@ -71,7 +71,7 @@ module.exports.loop = function () {
     }
     
 
-    if(builders.length < 2 && harvesters.length >= 4) {
+    if(builders.length < 2 && harvesters.length >= 2) {
         var newName = 'Builder' + Game.time;
         console.log('Spawning new builder: ' + newName);
         Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE], newName,
