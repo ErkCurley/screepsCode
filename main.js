@@ -36,9 +36,11 @@ module.exports.loop = function () {
         buildStructures.buildRoads()
     }
     
-    buildStructures.buildStorageStructures();
     
-    
+    buildStructures.buildTowers();
+    buildStructures.buildExtensions();
+    // buildStructures.buildContainers();
+
     
 
     for(var name in Memory.creeps) {

@@ -33,7 +33,65 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
         }
     },
 
-    buildStorageStructures: function (){
+    buildExtensions: function (){
+        if(harvesters.length >= 1){
+            
+            const extensions = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
+                filter: { structureType: STRUCTURE_EXTENSION }
+            });
+            
+            const construction_sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES,{
+                filter: { structureType: STRUCTURE_EXTENSION }
+            });
+            
+            if (extensions.length < 8 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9 && construction_sites.length == 0){
+                if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
+                    console.log("Creating Extension");
+                }else if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                    console.log("Creating Extension");
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                    console.log("Creating Extension");
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                    console.log("Creating Extension");
+                }else if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
+                    console.log("Creating Extension");
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y + 1, STRUCTURE_EXTENSION) == OK){
+                    console.log("Creating Extension");
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                    console.log("Creating Extension");
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                    console.log("Creating Extension");
+                }
+
+            }   
+        }
+    },
+    
+    buildContainers: function (){
+        if(harvesters.length >= 4){
+            const containers = Game.spawns[spawnName].room.find(FIND_STRUCTURES, {
+                filter: { structureType: STRUCTURE_CONTAINER }
+            });
+            if (containers.length < 5 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9){
+                // console.log("Creating Storage");
+                const construction_sites = Game.spawns[spawnName].room.find(FIND_CONSTRUCTION_SITES,{
+                    filter: { structureType: STRUCTURE_CONTAINER }
+                });
+                
+                if(construction_sites.length == 0 && containers.length > 0){
+                    console.log("Trying to build container")
+                    var response =  Game.spawns[spawnName].room.createConstructionSite(containers[containers.length - 1].pos.x + 1, containers[containers.length - 1].pos.y, STRUCTURE_CONTAINER);
+                    // console.log(response)
+                }else if (construction_sites.length == 0 && containers.length == 0){
+                    var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y + 2, STRUCTURE_CONTAINER);
+                    // console.log(response)
+                }
+            }
+        }
+        
+    },
+    
+    buildTowers: function() {
         if (Game.spawns[spawnName].room.controller.level >= 3){
             const towers = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
                     filter: { structureType: STRUCTURE_TOWER }
@@ -66,50 +124,12 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                 });
                 
                 if(construction_sites.length == 0){
-                    response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y + 1, STRUCTURE_TOWER);
+                    response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 3, STRUCTURE_TOWER);
                     console.log(response)
                 }
             }
         }
-    
-        if(harvesters.length >= 4){
-         const containers = Game.spawns[spawnName].room.find(FIND_STRUCTURES, {
-                filter: { structureType: STRUCTURE_CONTAINER }
-            });
-            if (containers.length < 5 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9){
-                // console.log("Creating Storage");
-                const construction_sites = Game.spawns[spawnName].room.find(FIND_CONSTRUCTION_SITES,{
-                    filter: { structureType: STRUCTURE_CONTAINER }
-                });
-                
-                if(construction_sites.length == 0 && containers.length > 0){
-                    console.log("Trying to build container")
-                    var response =  Game.spawns[spawnName].room.createConstructionSite(containers[containers.length - 1].pos.x + 1, containers[containers.length - 1].pos.y, STRUCTURE_CONTAINER);
-                    // console.log(response)
-                }else if (construction_sites.length == 0 && containers.length == 0){
-                    var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y + 2, STRUCTURE_CONTAINER);
-                    // console.log(response)
-                }
-            }
-            
-            const extensions = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
-                filter: { structureType: STRUCTURE_EXTENSION }
-            });
-            if (extensions.length < 10 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9){
-                // console.log("Creating Extension");
-                const construction_sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES,{
-                    filter: { structureType: STRUCTURE_EXTENSION }
-                });
-                
-                if(construction_sites.length == 0 && extensions.length > 0){
-                    var response =  Game.spawns[spawnName].room.createConstructionSite(extensions[extensions.length - 1].pos.x - 1, extensions[extensions.length - 1].pos.y + 1, STRUCTURE_EXTENSION);
-                    // console.log(response)
-                }else if (construction_sites.length == 0 && extensions.length == 0){
-                    var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION);
-                    // console.log(response)
-                }
-            }   
-        }
+        
     }
 }
 
