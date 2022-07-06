@@ -33,7 +33,7 @@ module.exports.loop = function () {
                 filter: { structureType: STRUCTURE_TOWER }
             });
     if(roads.length == 0){
-        buildRoads()
+        buildStructures.buildRoads()
     }
     
     buildStructures.buildStorageStructures();
