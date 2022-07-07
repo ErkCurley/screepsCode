@@ -6,8 +6,36 @@ function getRndInteger(min, max) {
 var roleHarvester = {
     /** @param {Creep} creep **/
     run: function(creep) {
+
+        const repairtargets = creep.room.find(FIND_STRUCTURES, {
+            filter: object => object.hits < object.hitsMax
+        });
+        if(creep.memory.activity != 'delivery' && creep.store.getFreeCapacity() == 0){
+            creep.memory.activity = 'delivery';
+            //creep.say('🔄 deliver');
+
+        }
         
-        if(creep.store.getFreeCapacity() > 0) {
+        if(creep.memory.activity == 'delivery' && creep.store[RESOURCE_ENERGY] != 0){
+            creep.memory.activity = 'delivery';
+            //creep.say('🔄 deliver');
+
+        }
+        
+        if(creep.memory.activity != 'harvesting' && creep.store[RESOURCE_ENERGY] == 0) {
+            creep.memory.activity = 'harvesting';
+            //creep.say('🔄 collect');
+        }
+        
+        // if(creep.memory.activity != 'delivery' && creep.store.getFreeCapacity() > 0) {
+        //     console.log("got here")
+        //     creep.memory.activity = 'harvesting';
+        //     creep.say('🔄 harvest');
+        // }
+        
+        
+        
+        if(creep.memory.activity == 'harvesting') {
             var sources = creep.room.find(FIND_SOURCES);
             for (let i = 0; i < sources.length; i++) {
                 if(sources[i].id == creep.memory.sourceTarget.id){
@@ -18,7 +46,9 @@ var roleHarvester = {
             }
 
 
-        }else{
+        }
+        
+        if(creep.memory.activity == 'delivery'){
             var targets = creep.room.find(FIND_STRUCTURES, {
                 filter: (structure) => {
                     return (structure.structureType == STRUCTURE_SPAWN ||
