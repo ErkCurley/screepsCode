@@ -75,7 +75,7 @@ module.exports.loop = function () {
         makeNewCreep('upgrader',[WORK,CARRY,MOVE])
     }
 
-    if(upgraders.length < 3 && harvesters.length >= 2) {
+    if(upgraders.length < 3 && upgraders.length >= 1  && harvesters.length >= 2) {
         makeNewCreep('upgrader',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE])
     }
     
