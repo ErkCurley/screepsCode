@@ -44,6 +44,7 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                 filter: { structureType: STRUCTURE_EXTENSION }
             });
             
+            
             if (extensions.length < 8 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9 && construction_sites.length == 0){
                 if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
