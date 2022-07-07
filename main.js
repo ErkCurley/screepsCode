@@ -32,7 +32,12 @@ module.exports.loop = function () {
     const roads = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
                 filter: { structureType: STRUCTURE_TOWER }
             });
-    if(roads.length == 0){
+    
+    const extensions = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
+                filter: { structureType: STRUCTURE_EXTENSION }
+            });
+            
+    if(roads.length == 0 && extensions.length > 4){
         buildStructures.buildRoads()
     }
     
