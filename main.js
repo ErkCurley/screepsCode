@@ -70,6 +70,10 @@ module.exports.loop = function () {
     if(harvesters.length >= 4 && harvesters.length < 6) {
         makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE])
     }
+    
+    if(upgraders.length == 0 && harvesters.length >= 2) {
+        makeNewCreep('upgrader',[WORK,CARRY,MOVE])
+    }
 
     if(upgraders.length < 3 && harvesters.length >= 2) {
         makeNewCreep('upgrader',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE])
