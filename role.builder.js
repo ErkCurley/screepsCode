@@ -59,7 +59,7 @@ var roleBuilder = {
             });
             
             if(energyStores.length > 0 && harvesters.length >= 2){
-                response = creep.withdraw(energyStores[0], RESOURCE_ENERGY);
+                var response = creep.withdraw(energyStores[0], RESOURCE_ENERGY);
                 if(response == ERR_NOT_IN_RANGE) {
                   creep.moveTo(energyStores[0]);
                 }    
