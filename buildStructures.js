@@ -128,7 +128,7 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                 });
                 
                 if(construction_sites.length == 0){
-                    response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 3, STRUCTURE_TOWER);
+                    var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 3, STRUCTURE_TOWER);
                     console.log(response)
                 }
             }
