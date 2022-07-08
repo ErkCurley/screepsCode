@@ -9,6 +9,8 @@ var roleBuilder = {
             creep.say('🚧 build');
         }
 
+
+        //need to find closest repair target
         const repairtargets = creep.room.find(FIND_STRUCTURES, {
             filter: object => object.hits < object.hitsMax
         });
