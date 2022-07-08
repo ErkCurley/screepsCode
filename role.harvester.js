@@ -65,7 +65,7 @@ var roleHarvester = {
                         creep.moveTo(containers[0], {visualizePathStyle: {stroke: '#ffffff'}});
                     }
                 }else{
-                    creep.moveTo(Game.spawns[spawnName]);
+                    creep.moveTo((Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y + 3));
                 }
                 
                 
