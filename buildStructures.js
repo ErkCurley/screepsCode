@@ -36,6 +36,7 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     buildExtensions: function (){
         if(harvesters.length >= 1){
             
+            
             const extensions = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
                 filter: { structureType: STRUCTURE_EXTENSION }
             });
@@ -46,21 +47,23 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
             
             
             if (extensions.length < 8 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9 && construction_sites.length == 0){
-                if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
+                
+
+                if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 2, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
-                }else if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                }else if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 2, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 2, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
-                }else if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
+                }else if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 2, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y + 1, STRUCTURE_EXTENSION) == OK){
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 2, Game.spawns[spawnName].pos.y + 2, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y - 1, STRUCTURE_EXTENSION) == OK){
+                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 2, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
                     console.log("Creating Extension");
                 }
 
