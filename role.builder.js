@@ -3,8 +3,10 @@ var roleBuilder = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
+        var spawnName = "Home"
+        
         var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-        if(!creep.memory.building != 'building' && targets.length > 0 && creep.store[RESOURCE_ENERGY] > 0) {
+        if(creep.memory.building != 'building' && targets.length > 0 && creep.store[RESOURCE_ENERGY] > 0) {
             creep.memory.building = 'building';
             creep.say('🚧 build');
         }
@@ -28,7 +30,7 @@ var roleBuilder = {
             }
         }
         
-        if(creep.memory.building != 'harvesting' && creep.store[RESOURCE_ENERGY] == 0) {
+        if(creep.memory.building != 'harvesting' && creep.store[RESOURCE_ENERGY] == 0 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9) {
             creep.memory.building = 'harvesting';
             creep.say('🔄 harvest');
         }
