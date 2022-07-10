@@ -82,7 +82,7 @@ module.exports.loop = function () {
         makeNewCreep('upgrader',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE])
     }
     
-    if(extensions.length >= 5 && attackers.length < 1){
+    if(extensions.length >= 5 && attackers.length < 4){
         makeNewCreep('attacker',[WORK,CARRY,MOVE,RANGED_ATTACK])
     }
 
