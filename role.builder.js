@@ -38,6 +38,14 @@ var roleBuilder = {
 
 
         if(creep.memory.building == 'building') {
+            if(towers.length > 0){
+                if(towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+                    var response = creep.transfer(towers[0], RESOURCE_ENERGY);
+                    if(response == ERR_NOT_IN_RANGE) {
+                      creep.moveTo(towers[0]);
+                    }   
+                }
+            }
             if(targets.length > 0) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
