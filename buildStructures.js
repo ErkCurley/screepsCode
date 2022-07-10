@@ -109,7 +109,7 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                 var tower = towers[0];
             
                 if(tower) {
-                    var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                    var closestDamagedStructure = tower.pos.findClosestByRange(FIND_MY_STRUCTURES, {
                         filter: (structure) => structure.hits < structure.hitsMax
                     });
                     if(closestDamagedStructure) {
