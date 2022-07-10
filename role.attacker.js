@@ -3,6 +3,10 @@ var roleAttacker = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
+        if(Game.getObjectById(creep.memory.target.id) == undefined){
+            creep.memory.target = undefined
+        }
+        
         if(creep.memory.activity == undefined){
             creep.memory.activity = "Idle"
             creep.say('🔨 Idle');
@@ -19,7 +23,8 @@ var roleAttacker = {
         
         
         hostiles = creep.room.find(FIND_HOSTILE_CREEPS)
-        if (hostiles.length > 0){
+        hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES)
+        if (hostiles.length > 0 || hostileStructures.length > 0){
             creep.memory.activity = "Attacking"
         }
         
@@ -38,8 +43,10 @@ var roleAttacker = {
         }
         
         if(creep.memory.activity == "Attacking") {
-            if(creep.memory.target == undefined){
+            if(creep.memory.target == undefined && hostiles.length > 0){
                 creep.memory.target = hostiles[0];
+            }else if (creep.memory.target == undefined && hostileStructures.length > 0){
+                creep.memory.target = hostileStructures[0]
             }
             
             if(creep.rangedAttack(Game.getObjectById(creep.memory.target.id)) == ERR_NOT_IN_RANGE) {
