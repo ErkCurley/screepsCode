@@ -15,7 +15,7 @@ var roleAttacker = {
         targetFlag = Game.flags.AttackPoint
         if (targetFlag != undefined){
             creep.memory.activity = "Moving";
-            creep.say('🌲 Moving');
+            // creep.say('🌲 Moving');
         }else{
             creep.memory.activity = "Idle"
         }
@@ -28,7 +28,7 @@ var roleAttacker = {
             creep.memory.activity = "Attacking"
         }
         
-        if(creep.memory.activity == "Attacking" && hostiles.length == 0){
+        if(creep.memory.activity == "Attacking" && hostiles.length == 0 && hostileStructures.length == 0){
             creep.memory.activity = "Idle"
         }
         
@@ -43,10 +43,15 @@ var roleAttacker = {
         }
         
         if(creep.memory.activity == "Attacking") {
+            
             if(creep.memory.target == undefined && hostiles.length > 0){
                 creep.memory.target = hostiles[0];
             }else if (creep.memory.target == undefined && hostileStructures.length > 0){
-                creep.memory.target = hostileStructures[0]
+                if(hostileStructures[0] == creep.room.controller && hostileStructures.length > 1){
+                    creep.memory.target = hostileStructures[1]
+                }else if (hostileStructures[0] != creep.room.controller && hostileStructures.length == 1){
+                    creep.memory.target = hostileStructures[0]    
+                }
             }
             
             if(creep.rangedAttack(Game.getObjectById(creep.memory.target.id)) == ERR_NOT_IN_RANGE) {
