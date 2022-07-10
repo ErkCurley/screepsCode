@@ -3,7 +3,7 @@ var roleAttacker = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
-        if(Game.getObjectById(creep.memory.target.id) == undefined){
+        if(creep.memory.target == undefined || Game.getObjectById(creep.memory.target.id) == undefined){
             creep.memory.target = undefined
         }
         
