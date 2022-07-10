@@ -44,6 +44,10 @@ var roleAttacker = {
         
         if(creep.memory.activity == "Attacking") {
             
+            if (hostiles.length > 0){
+                creep.memory.target = undefined
+            }
+            
             if(creep.memory.target == undefined && hostiles.length > 0){
                 creep.memory.target = hostiles[0];
             }else if (creep.memory.target == undefined && hostileStructures.length > 0){
@@ -51,10 +55,12 @@ var roleAttacker = {
                     creep.memory.target = hostileStructures[1]
                 }else if (hostileStructures[0] != creep.room.controller && hostileStructures.length == 1){
                     creep.memory.target = hostileStructures[0]    
+                }else if (hostileStructures[0] == creep.room.controller && hostileStructures.length == 1){
+                    creep.memory.target = undefined;
                 }
             }
             
-            if(creep.rangedAttack(Game.getObjectById(creep.memory.target.id)) == ERR_NOT_IN_RANGE) {
+            if(creep.memory.target && creep.rangedAttack(Game.getObjectById(creep.memory.target.id)) == ERR_NOT_IN_RANGE) {
                 creep.say("Pew");
                 creep.moveTo(Game.getObjectById(creep.memory.target.id), {visualizePathStyle: {stroke: '#ffff00'}});
             }
