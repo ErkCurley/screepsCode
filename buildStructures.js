@@ -116,9 +116,9 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                         tower.repair(closestDamagedStructure);
                     }
             
-                    var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    if(closestHostile) {
-                        tower.attack(closestHostile);
+                    var closestHostiles = tower.room.find(FIND_HOSTILE_CREEPS);
+                    if(closestHostiles > 0) {
+                        tower.attack(closestHostile[0]);
                     }
                 }
             } else {
