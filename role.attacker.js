@@ -3,6 +3,8 @@ var roleAttacker = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
+        
+        
         if(creep.memory.target == undefined || Game.getObjectById(creep.memory.target.id) == undefined){
             creep.memory.target = undefined
         }
@@ -29,6 +31,9 @@ var roleAttacker = {
         }
         
         if(creep.memory.activity == "Attacking" && hostiles.length == 0 && hostileStructures.length == 0){
+            creep.memory.activity = "Idle"
+        }
+        if(creep.memory.activity == "Attacking" && hostileStructures.length == 1 && hostileStructures[0] == creep.room.controller){
             creep.memory.activity = "Idle"
         }
         
