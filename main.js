@@ -1,6 +1,8 @@
 var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleAttacker = require('role.attacker');
+
 var buildStructures = require('buildStructures')
 
 var spawnName = "Home"
@@ -28,6 +30,7 @@ module.exports.loop = function () {
     //console.log('Ugraders: ' + upgraders.length);    
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     //console.log('Builders: ' + builders.length);
+    var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
     
     const roads = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
                 filter: { structureType: STRUCTURE_TOWER }
@@ -79,6 +82,9 @@ module.exports.loop = function () {
         makeNewCreep('upgrader',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE])
     }
     
+    if(extensions.length >= 5 && attackers.length < 1){
+        makeNewCreep('attacker',[WORK,CARRY,MOVE,RANGED_ATTACK])
+    }
 
     if(builders.length < 1 && harvesters.length >= 2) {
         var newName = 'Builder' + Game.time;
@@ -113,6 +119,9 @@ module.exports.loop = function () {
         }
         if(creep.memory.role == 'builder') {
             roleBuilder.run(creep);
+        }
+        if(creep.memory.role == 'attacker') {
+            roleAttacker.run(creep);
         }
     }
 }

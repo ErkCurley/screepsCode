@@ -3,29 +3,48 @@ var roleAttacker = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
-        if(creep.memory.upgrading == undefined){
-            creep.memory.upgrading = true
-            creep.say('🔨 upgrade');
+        if(creep.memory.activity == undefined){
+            creep.memory.activity = "Idle"
+            creep.say('🔨 Idle');
         }
         
-        if (creep.store[RESOURCE_ENERGY] == 0){
-            creep.memory.upgrading = false;
-            creep.say('🌲 harvest');
+        targetFlag = Game.flags.AttackPoint
+        if (targetFlag != undefined){
+            creep.memory.activity = "Moving";
+            creep.say('🌲 Moving');
+        }else{
+            creep.memory.activity = "Idle"
         }
         
-        if (creep.store.getFreeCapacity() == 0){
-            creep.memory.upgrading = true
+        
+        
+        hostiles = creep.room.find(FIND_HOSTILE_CREEPS)
+        if (hostiles.length > 0){
+            creep.memory.activity = "Attacking"
         }
         
-        if(creep.memory.upgrading == false){
-            if(creep.harvest(Game.getObjectById(creep.memory.sourceTarget.id)) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(Game.getObjectById(creep.memory.sourceTarget.id), {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
+        if(creep.memory.activity == "Attacking" && hostiles.length == 0){
+            creep.memory.activity = "Idle"
+        }
+        
+        
+        
+        if(creep.memory.activity == "Idle"){
+            //Not sure what to do here.
         }
   
-        if(creep.memory.upgrading == true) {
-            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller);
+        if(creep.memory.activity == "Moving") {
+            creep.moveTo(targetFlag, {visualizePathStyle: {stroke: '#ffffff'}});
+        }
+        
+        if(creep.memory.activity == "Attacking") {
+            if(creep.memory.target == undefined){
+                creep.memory.target = hostiles[0];
+            }
+            
+            if(creep.rangedAttack(Game.getObjectById(creep.memory.target.id)) == ERR_NOT_IN_RANGE) {
+                creep.say("Pew");
+                creep.moveTo(Game.getObjectById(creep.memory.target.id), {visualizePathStyle: {stroke: '#ffff00'}});
             }
         }
     }
