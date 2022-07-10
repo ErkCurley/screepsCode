@@ -117,8 +117,8 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                     }
             
                     var closestHostiles = tower.room.find(FIND_HOSTILE_CREEPS);
-                    if(closestHostiles > 0) {
-                        tower.attack(closestHostile[0]);
+                    if(closestHostiles.length > 0) {
+                        tower.attack(closestHostiles[0]);
                     }
                 }
             } else {
