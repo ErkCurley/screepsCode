@@ -83,7 +83,7 @@ module.exports.loop = function () {
     }
     
     if(extensions.length >= 5 && attackers.length < 4){
-        makeNewCreep('attacker',[WORK,CARRY,MOVE,RANGED_ATTACK])
+        makeNewCreep('attacker',[MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK])
     }
 
     if(builders.length < 1 && harvesters.length >= 2) {
