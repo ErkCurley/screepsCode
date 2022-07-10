@@ -3,8 +3,6 @@ var roleAttacker = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
-        
-        
         if(creep.memory.target == undefined || Game.getObjectById(creep.memory.target.id) == undefined){
             creep.memory.target = undefined
         }
@@ -13,16 +11,6 @@ var roleAttacker = {
             creep.memory.activity = "Idle"
             creep.say('🔨 Idle');
         }
-        
-        targetFlag = Game.flags.AttackPoint
-        if (targetFlag != undefined){
-            creep.memory.activity = "Moving";
-            // creep.say('🌲 Moving');
-        }else{
-            creep.memory.activity = "Idle"
-        }
-        
-        
         
         hostiles = creep.room.find(FIND_HOSTILE_CREEPS)
         hostileStructures = creep.room.find(FIND_HOSTILE_STRUCTURES)
@@ -33,10 +21,19 @@ var roleAttacker = {
         if(creep.memory.activity == "Attacking" && hostiles.length == 0 && hostileStructures.length == 0){
             creep.memory.activity = "Idle"
         }
-        if(creep.memory.activity == "Attacking" && hostileStructures.length == 1 && hostileStructures[0] == creep.room.controller){
+        if(creep.memory.activity == "Attacking" && hostiles.length == 0 && hostileStructures.length == 1 && hostileStructures[0] == creep.room.controller){
             creep.memory.activity = "Idle"
         }
         
+        targetFlag = Game.flags.AttackPoint
+        if (targetFlag != undefined && creep.memory.activity != "Attacking"){
+            creep.memory.activity = "Moving";
+            // creep.say('🌲 Moving');
+        }else if (targetFlag != undefined && creep.memory.activity == "Attacking"){
+            creep.memory.activity = "Attacking";
+        }else{
+            creep.memory.activity = "Idle"
+        }
         
         
         if(creep.memory.activity == "Idle"){
