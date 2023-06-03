@@ -53,12 +53,58 @@ function getSpaceAroundSources(){
 
 
 function makeNewCreep(role,parts){
+    
         var newName = role + Game.time;
+        
+        //Make code for selecting the closest source to the room controller as the default one for the upgraders
+
+        var allCreeps = Game.creeps
         var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
-        var target = getRndInteger(0,sources.length);
-        console.log('Spawning new '+role+': ' + newName);
+        counts = {}
+
+
+        //Distribute Creeps to sources based on least used source in the room
+        for(var i in sources){
+            counts[sources[i].id] = 0;
+        }
+        
+        for(var i in allCreeps) {
+            if(allCreeps[i].memory.role == 'harvester' || allCreeps[i].memory.role == 'upgrader'){
+                for(var k  in sources){
+                    if(allCreeps[i].memory.sourceTarget.id == k) {
+                        counts[k] += 1; 
+                    }
+                }
+            }
+        } 
+        
+        
+        
+        min = 100;
+        minSource = '';
+        for (i in counts){
+            if(counts[i] <= min){
+                minSource = i;
+                min = counts[i];
+            }
+        }
+        
+        
+        //*** Still not evenly distributing creepss
+        // If ideal source identified then use that one otherwise use a random source
+        // if (minSource == ''){
+        //     var target = sources[getRndInteger(0,sources.length)];
+        // }else{
+        //     var targetID = _.filter(sources, (source) => source.id == minSource);
+        //     // target = sources.indexOf(targetID);
+        //     var target = _.filter(sources, (source) => source.id == minSource);
+        // }
+        
+        var target = sources[getRndInteger(0,sources.length)];
+
+        console.log('Spawning new '+role+': ' + newName + "Target: " + target);
         Game.spawns[spawnName].spawnCreep(parts, newName,
-            {memory: {role: role, sourceTarget: sources[target]}});
+            {memory: {role: role, sourceTarget: target}});
 }
 
 
