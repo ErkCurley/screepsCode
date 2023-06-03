@@ -11,6 +11,47 @@ function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
 
+function getSpaceAroundSources(){
+    var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+    const terrain = Game.map.getRoomTerrain(Game.spawns[spawnName].room.name);
+
+    freeSpace = 0
+    for(i in sources){
+        
+        // console.log(terrain.get(sources[i].pos.x,sources[i].pos.y));
+        
+        positions = []
+        
+        positions.push(new RoomPosition(sources[i].pos.x - 1, sources[i].pos.y - 1, sources[i].pos.roomName))
+        positions.push(new RoomPosition(sources[i].pos.x,     sources[i].pos.y - 1, sources[i].pos.roomName))
+        positions.push(new RoomPosition(sources[i].pos.x + 1, sources[i].pos.y - 1, sources[i].pos.roomName))
+
+        positions.push(new RoomPosition(sources[i].pos.x - 1, sources[i].pos.y, sources[i].pos.roomName))
+        positions.push(new RoomPosition(sources[i].pos.x,     sources[i].pos.y, sources[i].pos.roomName))
+        positions.push(new RoomPosition(sources[i].pos.x + 1, sources[i].pos.y, sources[i].pos.roomName))
+        
+        positions.push(new RoomPosition(sources[i].pos.x - 1, sources[i].pos.y + 1, sources[i].pos.roomName))
+        positions.push(new RoomPosition(sources[i].pos.x,     sources[i].pos.y + 1, sources[i].pos.roomName))
+        positions.push(new RoomPosition(sources[i].pos.x + 1, sources[i].pos.y + 1, sources[i].pos.roomName))
+
+        for(k in positions){
+            switch(terrain.get(positions[k].x, positions[k].y)) {
+                case TERRAIN_MASK_WALL:
+                    break;
+                case TERRAIN_MASK_SWAMP:
+                    freeSpace += 1;
+                    break;
+                case 0:
+                    freeSpace += 1;
+                    break;
+            }
+        }
+    }
+    return freeSpace;
+}
+
+
+
 function makeNewCreep(role,parts){
         var newName = role + Game.time;
         var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
