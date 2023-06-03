@@ -5,8 +5,9 @@ var roleBuilder = {
         
         var spawnName = "Home"
         
-        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
-        if(creep.memory.building != 'building' && targets.length > 0 && creep.store[RESOURCE_ENERGY] > 0) {
+        var target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
+
+        if(creep.memory.building != 'building' && target != undefined && creep.store[RESOURCE_ENERGY] > 0) {
             creep.memory.building = 'building';
             creep.say('🚧 build');
         }
