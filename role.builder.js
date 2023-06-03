@@ -20,7 +20,7 @@ var roleBuilder = {
         const towers = creep.room.find(FIND_MY_STRUCTURES, {
             filter: { structureType: STRUCTURE_TOWER }
         });
-        if(creep.memory.building != 'repairing' && repairtargets.length > 0 && towers.length == 0){
+        if(creep.memory.building != 'repairing' && repairtargets.length > 0 && towers.length == 0 && repairtargets[0].structureType != STRUCTURE_WALL){
             creep.memory.building = 'repairing';
             creep.say('🔄 repair');
 
@@ -47,9 +47,10 @@ var roleBuilder = {
                     }   
                 }
             }
-            if(targets.length > 0) {
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+            
+            if(target != undefined) {
+                if(creep.build(target) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }else if(creep.store.getFreeCapacity() == 0){
                 var spawnSpots = creep.room.find(FIND_MY_STRUCTURES, {
