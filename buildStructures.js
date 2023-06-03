@@ -106,6 +106,8 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
             });
         
             if(towers.length > 0){
+                
+                //This code is more for controling towers and should be moved to its own module
                 var tower = towers[0];
             
                 if(tower) {
