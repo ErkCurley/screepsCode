@@ -40,7 +40,7 @@ module.exports.loop = function () {
                 filter: { structureType: STRUCTURE_EXTENSION }
             });
             
-    if(roads.length == 0 && extensions.length > 4){
+    if(roads.length == 0 && extensions.length > 2){
         buildStructures.buildRoads()
     }
     
@@ -50,64 +50,77 @@ module.exports.loop = function () {
     // buildStructures.buildContainers();
 
     
-
+    //Build Creeps
+        //Build creeps might be better in its own sub module
     for(var name in Memory.creeps) {
         if(!Game.creeps[name]) {
             delete Memory.creeps[name];
             console.log('Clearing non-existing creep memory:', name);
         }
     }
+    
+    //Create a script that checks the area around all the sources and doesn't make too many harvesters
+    var idealHarvesters = getSpaceAroundSources()
+        //Some sources can only be accessed from 1 spot thus creating traffic jams.
+        //There should be some ideal number of harvesters based on this value
+    
+    //Do not call make new creeps if there isnt enough energy to make said creep
+    if( Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .5 || harvesters.length < 1){
+        if(harvesters.length <= idealHarvesters){
+           if(harvesters.length <= 1) {
+                makeNewCreep('harvester',[WORK,CARRY,MOVE])
+            }
+        
+            if(harvesters.length == 2) {
+                makeNewCreep('harvester',[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE])
+            }
+            
+            if(harvesters.length == 3) {
+                makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE])
+            } 
+        }
+        
+        // if(harvesters.length >= 4 && harvesters.length < 6) {
+        //     makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE])
+        // }
+        
+        if(upgraders.length == 0 && harvesters.length >= 2) {
+            makeNewCreep('upgrader',[WORK,CARRY,MOVE])
+        }
+    
+        if(upgraders.length < 3 && upgraders.length >= 1  && harvesters.length >= 2) {
+            makeNewCreep('upgrader',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE])
+        }
+        
+        if(extensions.length >= 5 && attackers.length < 4 && Game.flags.AttackPoint){
+            makeNewCreep('attacker',[MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK])
+        }
+    
+        if(builders.length < 1 && harvesters.length >= 2) {
+            var newName = 'Builder' + Game.time;
+            console.log('Spawning new builder: ' + newName);
+            Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE], newName,
+                {memory: {role: 'builder'}});
+        }
+        
+        if(builders.length == 1 && harvesters.length >= 2) {
+            var newName = 'Builder' + Game.time;
+            console.log('Spawning new builder: ' + newName);
+            Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE, MOVE, MOVE], newName,
+                {memory: {role: 'builder'}});
+        }
+    
+        if(Game.spawns[spawnName].spawning) {
+            var spawningCreep = Game.creeps[Game.spawns[spawnName].spawning.name];
+            Game.spawns[spawnName].room.visual.text(
+                '🛠️' + spawningCreep.memory.role,
+                Game.spawns[spawnName].pos.x + 1,
+                Game.spawns[spawnName].pos.y,
+                {align: 'left', opacity: 0.8});
+        }
+    }
 
-    if(harvesters.length <= 1) {
-        makeNewCreep('harvester',[WORK,CARRY,MOVE])
-    }
     
-    if(harvesters.length == 2) {
-        makeNewCreep('harvester',[WORK,CARRY,CARRY,MOVE])
-    }
-    
-    if(harvesters.length == 3) {
-        makeNewCreep('harvester',[WORK,CARRY,CARRY,CARRY,MOVE])
-    }
-    
-    if(harvesters.length >= 4 && harvesters.length < 6) {
-        makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE])
-    }
-    
-    if(upgraders.length == 0 && harvesters.length >= 2) {
-        makeNewCreep('upgrader',[WORK,CARRY,MOVE])
-    }
-
-    if(upgraders.length < 3 && upgraders.length >= 1  && harvesters.length >= 2) {
-        makeNewCreep('upgrader',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE])
-    }
-    
-    if(extensions.length >= 5 && attackers.length < 4){
-        makeNewCreep('attacker',[MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK])
-    }
-
-    if(builders.length < 1 && harvesters.length >= 2) {
-        var newName = 'Builder' + Game.time;
-        console.log('Spawning new builder: ' + newName);
-        Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE], newName,
-            {memory: {role: 'builder'}});
-    }
-    
-    if(builders.length == 1 && harvesters.length >= 2) {
-        var newName = 'Builder' + Game.time;
-        console.log('Spawning new builder: ' + newName);
-        Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE, MOVE, MOVE], newName,
-            {memory: {role: 'builder'}});
-    }
-
-    if(Game.spawns[spawnName].spawning) {
-        var spawningCreep = Game.creeps[Game.spawns[spawnName].spawning.name];
-        Game.spawns[spawnName].room.visual.text(
-            '🛠️' + spawningCreep.memory.role,
-            Game.spawns[spawnName].pos.x + 1,
-            Game.spawns[spawnName].pos.y,
-            {align: 'left', opacity: 0.8});
-    }
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
