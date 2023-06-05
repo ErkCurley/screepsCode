@@ -18,6 +18,8 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
  var buildStructures = {
 
     buildRoads: function (){
+        //Build Roads around the spawn and the extensions
+        
         var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
         for (let i = 0; i < sources.length; i++) {
             var paths = PathFinder.search(Game.spawns[spawnName].pos,sources[i].pos);
@@ -100,30 +102,8 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
             const towers = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
                     filter: { structureType: STRUCTURE_TOWER }
                 });
-            
-            const containers = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
-                filter: { structureType: STRUCTURE_CONTAINER }
-            });
-        
-            if(towers.length > 0){
-                
-                //This code is more for controling towers and should be moved to its own module
-                var tower = towers[0];
-            
-                if(tower) {
-                    var closestDamagedStructure = tower.pos.findClosestByRange(FIND_MY_STRUCTURES, {
-                        filter: (structure) => structure.hits < structure.hitsMax
-                    });
-                    if(closestDamagedStructure) {
-                        tower.repair(closestDamagedStructure);
-                    }
-            
-                    var closestHostiles = tower.room.find(FIND_HOSTILE_CREEPS);
-                    if(closestHostiles.length > 0) {
-                        tower.attack(closestHostiles[0]);
-                    }
-                }
-            } else {
+
+            if(towers.length <= 0){
                 console.log("Creating Tower")
                 const construction_sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES,{
                     filter: { structureType: STRUCTURE_TOWER }
@@ -133,9 +113,30 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                     var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 3, STRUCTURE_TOWER);
                     console.log(response)
                 }
+                
             }
         }
-        
+    },
+    
+    buildLinks: function(position) {
+        if (Game.spawns[spawnName].room.controller.level >= 5){
+            const links = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
+                    filter: { structureType: STRUCTURE_LINK }
+                });
+            
+            if(links.length <= 1){
+                if(Game.spawns[spawnName].room.createConstructionSite(position.x, position.y - 1, STRUCTURE_LINK)){
+                    console.log(Game.spawns[spawnName].room.createConstructionSite(position.x, position.y - 1, STRUCTURE_LINK))
+                    console.log("Creating Link Below", position.x, position.y - 1);
+                }else if(Game.spawns[spawnName].room.createConstructionSite(position.x, position.y + 1)){
+                    console.log("Creating Link Above");
+                }else if(Game.spawns[spawnName].room.createConstructionSite(position.x - 1, position.y)){
+                    console.log("Creating Link Left");
+                }else if(Game.spawns[spawnName].room.createConstructionSite(position.x + 1, position.y)){
+                    console.log("Creating Link Right");
+                }
+            }
+        }
     }
 }
 

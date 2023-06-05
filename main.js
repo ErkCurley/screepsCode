@@ -11,16 +11,17 @@ function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
 
-function getSpaceAroundSources(){
+function getSpaceAroundSources(selected = undefined){
     var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
     const terrain = Game.map.getRoomTerrain(Game.spawns[spawnName].room.name);
 
-    freeSpace = 0
+    freeSpace = 0;
+    freeSpacePos = '';
     for(i in sources){
         
         // console.log(terrain.get(sources[i].pos.x,sources[i].pos.y));
         
-        positions = []
+        positions = [];
         
         positions.push(new RoomPosition(sources[i].pos.x - 1, sources[i].pos.y - 1, sources[i].pos.roomName))
         positions.push(new RoomPosition(sources[i].pos.x,     sources[i].pos.y - 1, sources[i].pos.roomName))
@@ -40,14 +41,26 @@ function getSpaceAroundSources(){
                     break;
                 case TERRAIN_MASK_SWAMP:
                     freeSpace += 1;
+                    if(selected == i){
+                        freeSpacePos = positions[k];
+                    }
                     break;
                 case 0:
                     freeSpace += 1;
+                    if(selected == i){
+                        freeSpacePos = positions[k];
+                    }
                     break;
             }
         }
     }
-    return freeSpace;
+    
+    if(selected == undefined){
+        return freeSpace;
+    }else{
+        return freeSpacePos;
+    }
+    
 }
 
 
@@ -131,6 +144,11 @@ module.exports.loop = function () {
         buildStructures.buildRoads()
     }
     
+    var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+    for(i in sources){
+        position = getSpaceAroundSources(i)
+        buildStructures.buildLinks(position);
+    }
     
     buildStructures.buildTowers();
     buildStructures.buildExtensions();
