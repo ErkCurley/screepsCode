@@ -7,6 +7,32 @@ var buildStructures = require('buildStructures')
 
 var spawnName = "Home"
 
+function controlTowers(){
+    const towers = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
+                    filter: { structureType: STRUCTURE_TOWER }
+                });
+    
+    if(towers.length <= 0){
+        return;
+    }
+    
+    var tower = towers[0];
+
+    if(tower) {
+        var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+            filter: (structure) => structure.hits < structure.hitsMax
+        });
+        if(closestDamagedStructure) {
+            tower.repair(closestDamagedStructure);
+        }
+
+        var closestHostiles = tower.room.find(FIND_HOSTILE_CREEPS);
+        if(closestHostiles.length > 0) {
+            tower.attack(closestHostiles[0]);
+        }
+    }
+}
+
 function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
@@ -153,6 +179,8 @@ module.exports.loop = function () {
     buildStructures.buildTowers();
     buildStructures.buildExtensions();
     // buildStructures.buildContainers();
+    
+    controlTowers()
 
     
     //Build Creeps
