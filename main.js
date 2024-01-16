@@ -92,7 +92,6 @@ function getSpaceAroundSources(selected = undefined){
 }
 
 
-
 function makeNewCreep(role,parts){
     
         var newName = role + Game.time;
@@ -151,7 +150,11 @@ function makeNewCreep(role,parts){
 
 
 module.exports.loop = function () {
-
+    
+    if (Game.spawns[spawnName].room.memory.linkedSources == undefined){
+        Game.spawns[spawnName].room.memory.linkedSources = [];
+    }
+    
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     //console.log('Harvesters: ' + harvesters.length);
     var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
@@ -174,10 +177,12 @@ module.exports.loop = function () {
     
     var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
     for(i in sources){
-        position = getSpaceAroundSources(i)
-        buildStructures.buildLinks(position);
+        var position = getSpaceAroundSources(i);
+        buildStructures.buildLinks(position, sources[i].id);
     }
     
+
+    buildStructures.buildLinks();
     buildStructures.buildTowers();
     buildStructures.buildExtensions();
     // buildStructures.buildContainers();
