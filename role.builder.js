@@ -7,19 +7,24 @@ var roleBuilder = {
         
         var target = creep.pos.findClosestByRange(FIND_MY_CONSTRUCTION_SITES);
 
-        if(creep.memory.building != 'building' && target != undefined && creep.store[RESOURCE_ENERGY] > 0) {
-            creep.memory.building = 'building';
-            creep.say('🚧 build');
-        }
-
-
-        //need to find closest repair target
         const repairtargets = creep.room.find(FIND_STRUCTURES, {
             filter: object => object.hits < object.hitsMax
         });
         const towers = creep.room.find(FIND_MY_STRUCTURES, {
             filter: { structureType: STRUCTURE_TOWER }
         });
+        
+        if(creep.memory.building != 'building' && target != undefined && creep.store[RESOURCE_ENERGY] > 0) {
+            creep.memory.building = 'building';
+            creep.say('🚧 build');
+        }
+        
+        if(creep.memory.building == 'building' && creep.store[RESOURCE_ENERGY] == 0){
+            creep.moveTo(towers[0]);
+        }
+
+        //need to find closest repair target
+        
         if(creep.memory.building != 'repairing' && repairtargets.length > 0 && towers.length == 0 && repairtargets[0].structureType != STRUCTURE_WALL){
             creep.memory.building = 'repairing';
             creep.say('🔄 repair');
@@ -39,14 +44,8 @@ var roleBuilder = {
 
 
         if(creep.memory.building == 'building') {
-            if(towers.length > 0){
-                if(towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
-                    var response = creep.transfer(towers[0], RESOURCE_ENERGY);
-                    if(response == ERR_NOT_IN_RANGE) {
-                      creep.moveTo(towers[0]);
-                    }   
-                }
-            }
+            
+            //Take energy from the spawn if there is extra space in the extensions and spawn is almost full
             
             if(target != undefined) {
                 if(creep.build(target) == ERR_NOT_IN_RANGE) {
@@ -81,6 +80,15 @@ var roleBuilder = {
         if(creep.memory.building == 'repairing') {
             if(creep.repair(repairtargets[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(repairtargets[0]);
+            }
+        }
+        
+        if(towers.length > 0){
+            if(towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+                var response = creep.transfer(towers[0], RESOURCE_ENERGY);
+                if(response == ERR_NOT_IN_RANGE) {
+                  creep.moveTo(towers[0]);
+                }   
             }
         }
     }
