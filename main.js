@@ -198,14 +198,15 @@ module.exports.loop = function () {
         //There should be some ideal number of harvesters based on this value
     
     //Do not call make new creeps if there isnt enough energy to make said creep
-    if( Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .5 || harvesters.length < 1){
+    if( Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .5 || harvesters.length <= 2){
+        // console.log(idealHarvesters)
         if(harvesters.length <= idealHarvesters){
            if(harvesters.length <= 1) {
                 makeNewCreep('harvester',[WORK,CARRY,MOVE])
             }
         
             if(harvesters.length == 2) {
-                makeNewCreep('harvester',[WORK,WORK,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE])
+                makeNewCreep('harvester',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE])
             }
             
             if(harvesters.length == 3) {
@@ -239,7 +240,7 @@ module.exports.loop = function () {
         if(builders.length == 1 && harvesters.length >= 2) {
             var newName = 'Builder' + Game.time;
             console.log('Spawning new builder: ' + newName);
-            Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE, MOVE, MOVE], newName,
+            Game.spawns[spawnName].spawnCreep([WORK,CARRY,CARRY, CARRY, MOVE], newName,
                 {memory: {role: 'builder'}});
         }
     
