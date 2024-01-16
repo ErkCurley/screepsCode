@@ -121,9 +121,9 @@ function makeNewCreep(role,parts){
         
         
         
-        min = 100;
-        minSource = '';
-        for (i in counts){
+        var min = 100;
+        var minSource = '';
+        for (var i in counts){
             if(counts[i] <= min){
                 minSource = i;
                 min = counts[i];
