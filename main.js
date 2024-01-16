@@ -20,7 +20,7 @@ function controlTowers(){
 
     if(tower) {
         var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-            filter: (structure) => structure.hits < structure.hitsMax
+            filter: (structure) => structure.hits < structure.hitsMax * .75 //&& structure.owner == "ErkCurley"  
         });
         
         if(closestDamagedStructure) {
