@@ -22,6 +22,7 @@ function controlTowers(){
         var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
             filter: (structure) => structure.hits < structure.hitsMax
         });
+        
         if(closestDamagedStructure) {
             tower.repair(closestDamagedStructure);
         }
@@ -37,17 +38,18 @@ function getRndInteger(min, max) {
   return Math.floor(Math.random() * (max - min) ) + min;
 }
 
+
 function getSpaceAroundSources(selected = undefined){
     var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
     const terrain = Game.map.getRoomTerrain(Game.spawns[spawnName].room.name);
 
-    freeSpace = 0;
-    freeSpacePos = '';
+    var freeSpace = 0;
+    var freeSpacePos = '';
     for(i in sources){
         
         // console.log(terrain.get(sources[i].pos.x,sources[i].pos.y));
         
-        positions = [];
+        var positions = [];
         
         positions.push(new RoomPosition(sources[i].pos.x - 1, sources[i].pos.y - 1, sources[i].pos.roomName))
         positions.push(new RoomPosition(sources[i].pos.x,     sources[i].pos.y - 1, sources[i].pos.roomName))
@@ -61,7 +63,7 @@ function getSpaceAroundSources(selected = undefined){
         positions.push(new RoomPosition(sources[i].pos.x,     sources[i].pos.y + 1, sources[i].pos.roomName))
         positions.push(new RoomPosition(sources[i].pos.x + 1, sources[i].pos.y + 1, sources[i].pos.roomName))
 
-        for(k in positions){
+        for(var k in positions){
             switch(terrain.get(positions[k].x, positions[k].y)) {
                 case TERRAIN_MASK_WALL:
                     break;
