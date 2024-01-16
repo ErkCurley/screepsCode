@@ -101,7 +101,7 @@ function makeNewCreep(role,parts){
 
         var allCreeps = Game.creeps
         var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
-        counts = {}
+        var counts = {}
 
 
         //Distribute Creeps to sources based on least used source in the room
