@@ -118,22 +118,31 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
         }
     },
     
-    buildLinks: function(position) {
+    buildLinks: function(position = undefined, sourceId = undefined) {
         if (Game.spawns[spawnName].room.controller.level >= 5){
             const links = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
-                    filter: { structureType: STRUCTURE_LINK }
-                });
+                filter: { structureType: STRUCTURE_LINK }
+            });
             
-            if(links.length <= 1){
-                if(Game.spawns[spawnName].room.createConstructionSite(position.x, position.y - 1, STRUCTURE_LINK)){
-                    console.log(Game.spawns[spawnName].room.createConstructionSite(position.x, position.y - 1, STRUCTURE_LINK))
-                    console.log("Creating Link Below", position.x, position.y - 1);
-                }else if(Game.spawns[spawnName].room.createConstructionSite(position.x, position.y + 1)){
-                    console.log("Creating Link Above");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(position.x - 1, position.y)){
-                    console.log("Creating Link Left");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(position.x + 1, position.y)){
-                    console.log("Creating Link Right");
+            const sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES, {
+                filter: { structureType: STRUCTURE_LINK }
+            });
+                    
+            if(links.length < 1 && sites.length < 1){
+                var spawnBuilding = Game.spawns[spawnName]
+                spawnPos = new RoomPosition(spawnBuilding.pos.x,spawnBuilding.pos.y + 1, spawnBuilding.pos.roomName);
+                Game.spawns[spawnName].room.createConstructionSite(spawnPos.x, spawnPos.y, STRUCTURE_LINK);
+            }   
+            
+            // //First find nearest soruce and build a link there. Next check room level higher control levels and build coresponding links.
+            
+            if(links.length == 1 && position != undefined && sourceId != undefined){
+                
+                sources = Game.spawns[spawnName].room.memory.linkedSources
+                if(sources.indexOf(sourceId) == -1){
+                    Game.spawns[spawnName].room.createConstructionSite(position.x, position.y, STRUCTURE_LINK);
+                    sources.push(sourceId)
+                    Game.spawns[spawnName].room.memory.linkedSources = sources
                 }
             }
         }
