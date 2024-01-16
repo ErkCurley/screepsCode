@@ -137,6 +137,18 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                 }
             }
         }
+        
+        // if (Game.spawns[spawnName].room.controller.level >= 5){
+        //         if(Game.spawns[spawnName].room.createConstructionSite(position.x, position.y - 1, STRUCTURE_LINK)){
+        //             console.log("Creating Link Below", position.x, position.y - 1);
+        //         }else if(Game.spawns[spawnName].room.createConstructionSite(position.x, position.y + 1)){
+        //             console.log("Creating Link Above");
+        //         }else if(Game.spawns[spawnName].room.createConstructionSite(position.x - 1, position.y)){
+        //             console.log("Creating Link Left");
+        //         }else if(Game.spawns[spawnName].room.createConstructionSite(position.x + 1, position.y)){
+        //             console.log("Creating Link Right");
+        //         }
+        // }
     }
 }
 
