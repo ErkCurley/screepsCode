@@ -15,8 +15,10 @@ var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader'
 var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
 //console.log('Builders: ' + builders.length);
  
- var buildStructures = {
 
+ 
+ var buildStructures = {
+    
     buildRoads: function (){
         //Build Roads around the spawn and the extensions
         
@@ -26,13 +28,39 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
             for (let i = 0; i < paths.path.length; i++) {
                 Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
             }
+            
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y + 1, STRUCTURE_ROAD)
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y, STRUCTURE_ROAD)
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y - 1, STRUCTURE_ROAD)
+            
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y + 1, STRUCTURE_ROAD)
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y, STRUCTURE_ROAD)
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y - 1, STRUCTURE_ROAD)
+            
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y + 1, STRUCTURE_ROAD)
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y, STRUCTURE_ROAD)
+            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y - 1, STRUCTURE_ROAD)
         }
+        
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y + 1, STRUCTURE_ROAD)
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y, STRUCTURE_ROAD)
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y - 1, STRUCTURE_ROAD)
+        
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y + 1, STRUCTURE_ROAD)
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y, STRUCTURE_ROAD)
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 1, STRUCTURE_ROAD)
+        
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y + 1, STRUCTURE_ROAD)
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y, STRUCTURE_ROAD)
+        Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y - 1, STRUCTURE_ROAD)
+        
         
         var paths = PathFinder.search(Game.spawns[spawnName].pos,Game.spawns[spawnName].room.controller.pos);
         
         for (let i = 0; i < paths.path.length; i++) {
             Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
         }
+        
     },
 
     buildExtensions: function (){
