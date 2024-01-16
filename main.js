@@ -158,15 +158,15 @@ module.exports.loop = function () {
     //console.log('Builders: ' + builders.length);
     var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
     
-    const roads = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
-                filter: { structureType: STRUCTURE_TOWER }
+    const roads = Game.spawns[spawnName].room.find(FIND_STRUCTURES, {
+                filter: { structureType: STRUCTURE_ROAD }
             });
     
     const extensions = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
                 filter: { structureType: STRUCTURE_EXTENSION }
             });
             
-    if(roads.length == 0 && extensions.length > 2){
+    if(roads.length <= 10 && extensions.length > 2){
         buildStructures.buildRoads()
     }
     
