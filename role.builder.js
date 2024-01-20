@@ -42,81 +42,87 @@ var roleBuilder = {
             filter: { structureType: STRUCTURE_TOWER }
         });
         
-        if(creep.memory.building != 'building' && target != undefined && creep.store[RESOURCE_ENERGY] > 0) {
+        var energyStores = creep.room.find(FIND_STRUCTURES, {
+        filter: (structure) => {
+            return (structure.structureType == STRUCTURE_EXTENSION ||
+                structure.structureType == STRUCTURE_SPAWN ||
+                structure.structureType == STRUCTURE_CONTAINER) &&
+                structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity();
+        }
+        });
+        var totalEnergyCap = 0;
+        var storedEnergy = 0;
+        var spawnHasEnergy = false;
+        
+        
+        for(i in energyStores){
+            totalEnergyCap = energyStores[i].store.getCapacity(RESOURCE_ENERGY)
+            storedEnergy = energyStores[i].store.getUsedCapacity(RESOURCE_ENERGY)
+        }
+        
+        if(storedEnergy > totalEnergyCap * .5){
+            spawnHasEnergy = true
+        }
+        
+        
+        
+        if(creep.memory.building != 'store' && towers.length > 0 && towers[0].store.getFreeCapacity(RESOURCE_ENERGY) == 0){
+            creep.memory.building = 'store';
+            creep.say('🏦 store');
+        }
+        
+        if(creep.memory.building != 'building' && target != undefined && spawnHasEnergy == true) {
             creep.memory.building = 'building';
             creep.say('🚧 build');
         }
         
-        if(creep.memory.building == 'building' && creep.store[RESOURCE_ENERGY] == 0){
-            creep.moveTo(towers[0]);
+        if(creep.memory.building != 'filling' && towers.length > 0 && towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+            creep.memory.building = 'filling';
+            creep.say('⛽ fill');
         }
-
-        //need to find closest repair target
         
         if(creep.memory.building != 'repairing' && repairtargets.length > 0 && towers.length == 0 && repairtargets[0].structureType != STRUCTURE_WALL){
             creep.memory.building = 'repairing';
             creep.say('🔄 repair');
-
-            repairtargets.sort((a,b) => a.hits - b.hits);
-
-            if(repairtargets.length > 0) {
-                creep.memory.building = 'repairing';
-            }
         }
         
-        if(creep.memory.building != 'harvesting' && creep.store[RESOURCE_ENERGY] == 0 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9) {
-            creep.memory.building = 'harvesting';
-            creep.say('🔄 harvest');
-        }
-        
-
-
-        if(creep.memory.building == 'building') {
-            
-            //Take energy from the spawn if there is extra space in the extensions and spawn is almost full
-            
-            if(target != undefined) {
-                if(creep.build(target) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }else if(creep.store.getFreeCapacity() == 0){
-                var spawnSpots = creep.room.find(FIND_MY_STRUCTURES, {
-                    filter: { structureType: STRUCTURE_SPAWN }
-                });
-                creep.moveTo((spawnSpots[0].pos.x + 1, spawnSpots[0].pos.y), {visualizePathStyle: {stroke: '#ffffff'}})
-            }
-        }
-        if(creep.memory.building == 'harvesting') {
-            var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
-            var energyStores = creep.room.find(FIND_STRUCTURES, {
-                filter: (structure) => {
-                    return (structure.structureType == STRUCTURE_EXTENSION ||
-                        structure.structureType == STRUCTURE_SPAWN ||
-                        structure.structureType == STRUCTURE_CONTAINER) &&
-                        structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity();
-                }
-            });
-            
-            if(energyStores.length > 0 && harvesters.length >= 2){
-                var response = creep.withdraw(energyStores[0], RESOURCE_ENERGY);
-                if(response == ERR_NOT_IN_RANGE) {
-                  creep.moveTo(energyStores[0]);
-                }    
-            }
-            
-        }
+        //ACTIONS
         if(creep.memory.building == 'repairing') {
+            
+            if(creep.store.getUsedCapacity(RESOURCE_ENERGY) < creep.store.getCapacity(RESOURCE_ENERGY) * .5){
+                refuel(creep)
+            }
+            
             if(creep.repair(repairtargets[0]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(repairtargets[0]);
             }
         }
         
-        if(towers.length > 0){
-            if(towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
-                var response = creep.transfer(towers[0], RESOURCE_ENERGY);
-                if(response == ERR_NOT_IN_RANGE) {
-                  creep.moveTo(towers[0]);
-                }   
+        
+        if(creep.memory.building == 'filling') {
+            if(creep.store.getUsedCapacity(RESOURCE_ENERGY) < creep.store.getCapacity(RESOURCE_ENERGY) * .5){
+                refuel(creep)
+            }
+        
+            for(i in towers){
+                if(towers[i].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+                    var response = creep.transfer(towers[i], RESOURCE_ENERGY);
+                    if(response == ERR_NOT_IN_RANGE) {
+                      creep.moveTo(towers[i]);
+                    } 
+                }
+            }
+        }
+
+        if(creep.memory.building == 'building') {
+            if(creep.store.getUsedCapacity(RESOURCE_ENERGY) < creep.store.getCapacity(RESOURCE_ENERGY) * .5 && spawnHasEnergy == true){
+                refuel(creep)
+            }
+            
+            if(target != undefined) {
+                if(creep.build(target) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             }
         }
     }
