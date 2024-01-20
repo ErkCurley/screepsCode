@@ -139,7 +139,18 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                 
                 if(construction_sites.length == 0){
                     var response =  Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 3, STRUCTURE_TOWER);
-                    // console.log(response)
+                    
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y - 4, STRUCTURE_ROAD)
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y - 3, STRUCTURE_ROAD)
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 1, Game.spawns[spawnName].pos.y - 2, STRUCTURE_ROAD)
+                    
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 4, STRUCTURE_ROAD)
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 3, STRUCTURE_ROAD)
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 2, STRUCTURE_ROAD)
+                    
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y - 4, STRUCTURE_ROAD)
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y - 3, STRUCTURE_ROAD)
+                    Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y - 2, STRUCTURE_ROAD)
                 }
                 
             }
