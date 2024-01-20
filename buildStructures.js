@@ -29,6 +29,9 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                 Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
             }
             
+            
+            //Find the direction the spawn is from the soruce and place roads on that side.
+            
             Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y + 1, STRUCTURE_ROAD)
             Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y, STRUCTURE_ROAD)
             Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y - 1, STRUCTURE_ROAD)
@@ -57,6 +60,11 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
         
         var paths = PathFinder.search(Game.spawns[spawnName].pos,Game.spawns[spawnName].room.controller.pos);
         
+        for (let i = 0; i < paths.path.length; i++) {
+            Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
+        }
+        
+        var paths = PathFinder.search(Game.spawns[spawnName].room.memory.upgradeSource.pos,Game.spawns[spawnName].room.controller.pos);
         for (let i = 0; i < paths.path.length; i++) {
             Game.spawns[spawnName].room.createConstructionSite(paths.path[i], STRUCTURE_ROAD)
         }
