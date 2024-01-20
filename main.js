@@ -200,13 +200,15 @@ module.exports.loop = function () {
     }
     
     //Create a script that checks the area around all the sources and doesn't make too many harvesters
-    var idealHarvesters = getSpaceAroundSources()
+    var idealHarvesters = getSpaceAroundSources() + sources.length
         //Some sources can only be accessed from 1 spot thus creating traffic jams.
         //There should be some ideal number of harvesters based on this value
+        //Refine the script that makes the number of ideal harvesters to also account for terrain that has added roads to access previously inaccessable sources
     
     //Do not call make new creeps if there isnt enough energy to make said creep
+    //Actually use spawn creep dry run to determien if its possible to spawn a new creep
     if( Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .5 || harvesters.length <= 2){
-        // console.log(idealHarvesters)
+        // console.log("Ideal Number of Harvesters: " + idealHarvesters)
         if(harvesters.length <= idealHarvesters){
            if(harvesters.length <= 1) {
                 makeNewCreep('harvester',[WORK,CARRY,MOVE])
@@ -217,7 +219,7 @@ module.exports.loop = function () {
             }
             
             if(harvesters.length == 3) {
-                makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE])
+                makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE])
             } 
         }
         
