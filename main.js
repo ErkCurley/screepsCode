@@ -240,15 +240,15 @@ module.exports.loop = function () {
         if(builders.length < 1 && harvesters.length >= 2) {
             var newName = 'Builder' + Game.time;
             console.log('Spawning new builder: ' + newName);
-            Game.spawns[spawnName].spawnCreep([WORK,CARRY,MOVE], newName,
-                {memory: {role: 'builder'}});
+            Game.spawns[spawnName].spawnCreep([WORK,WORK,CARRY,MOVE], newName,
+                {memory: {role: 'builder', building: 'building'}});
         }
         
         if(builders.length == 1 && harvesters.length >= 2) {
             var newName = 'Builder' + Game.time;
             console.log('Spawning new builder: ' + newName);
-            Game.spawns[spawnName].spawnCreep([WORK,CARRY,CARRY, CARRY, MOVE], newName,
-                {memory: {role: 'builder'}});
+            Game.spawns[spawnName].spawnCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE], newName,
+                {memory: {role: 'builder', building: 'building'}});
         }
     
         if(Game.spawns[spawnName].spawning) {
