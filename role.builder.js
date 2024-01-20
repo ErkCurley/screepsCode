@@ -1,4 +1,20 @@
-var roleBuilder = {
+function refuel(creep){
+    var energyStores = creep.room.find(FIND_STRUCTURES, {
+    filter: (structure) => {
+        return (structure.structureType == STRUCTURE_EXTENSION ||
+            structure.structureType == STRUCTURE_SPAWN ||
+            structure.structureType == STRUCTURE_CONTAINER) &&
+            structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity();
+    }
+    });
+
+    if(energyStores.length > 0){
+        var response = creep.withdraw(energyStores[0], RESOURCE_ENERGY);
+        if(response == ERR_NOT_IN_RANGE) {
+          creep.moveTo(energyStores[0]);
+        }    
+    }
+}
 
     /** @param {Creep} creep **/
     run: function(creep) {
