@@ -92,59 +92,29 @@ function getSpaceAroundSources(selected = undefined){
 }
 
 
-function makeNewCreep(role,parts){
+function makeNewCreep(role,parts,sources){
+    
+        console.log("trying to spawn a:" + role)
+        if (Game.spawns[spawnName].spawnCreep(parts, "test", {dryrun: true}) == ERR_NOT_ENOUGH_ENERGY){
+            return
+        }
+    
     
         var newName = role + Game.time;
-        
-        //Make code for selecting the closest source to the room controller as the default one for the upgraders
-
-        var allCreeps = Game.creeps
         var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
-        var counts = {}
-
-
-        //Distribute Creeps to sources based on least used source in the room
-        for(var i in sources){
-            counts[sources[i].id] = 0;
+        var target = ''
+        
+        if(role == "upgrader"){
+            target = Game.spawns[spawnName].room.memory.upgradeSource
         }
         
-        for(var i in allCreeps) {
-            if(allCreeps[i].memory.role == 'harvester' || allCreeps[i].memory.role == 'upgrader'){
-                for(var k  in sources){
-                    if(allCreeps[i].memory.sourceTarget.id == k) {
-                        counts[k] += 1; 
-                    }
-                }
-            }
-        } 
-        
-        
-        
-        var min = 100;
-        var minSource = '';
-        for (var i in counts){
-            if(counts[i] <= min){
-                minSource = i;
-                min = counts[i];
-            }
+        if(role == "harvester"){
+            target = Game.spawns[spawnName].room.memory.harvestSource
         }
-        
-        
-        //*** Still not evenly distributing creepss
-        // If ideal source identified then use that one otherwise use a random source
-        // if (minSource == ''){
-        //     var target = sources[getRndInteger(0,sources.length)];
-        // }else{
-        //     var targetID = _.filter(sources, (source) => source.id == minSource);
-        //     // target = sources.indexOf(targetID);
-        //     var target = _.filter(sources, (source) => source.id == minSource);
-        // }
-        
-        var target = sources[getRndInteger(0,sources.length)];
 
         console.log('Spawning new '+role+': ' + newName + "Target: " + target);
-        Game.spawns[spawnName].spawnCreep(parts, newName,
-            {memory: {role: role, sourceTarget: target}});
+        Game.spawns[spawnName].spawnCreep(
+            parts, newName,{memory: {role: role, sourceTarget: target}});
 }
 
 
@@ -162,6 +132,8 @@ module.exports.loop = function () {
     var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     //console.log('Builders: ' + builders.length);
     var attackers = _.filter(Game.creeps, (creep) => creep.memory.role == 'attacker');
+    var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+    var roomController = Game.spawns[spawnName].room.controller;
     
     const roads = Game.spawns[spawnName].room.find(FIND_STRUCTURES, {
                 filter: { structureType: STRUCTURE_ROAD }
@@ -170,12 +142,51 @@ module.exports.loop = function () {
     const extensions = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
                 filter: { structureType: STRUCTURE_EXTENSION }
             });
-            
+
+    if (Game.spawns[spawnName].room.memory.linkedSources == undefined){
+        Game.spawns[spawnName].room.memory.linkedSources = [];
+    }
+    
+    if (Game.spawns[spawnName].room.memory.upgradeSorce == undefined){
+        var shortestPath = ""
+        var shortestPathLen = 1000
+        for(i in sources){
+            currentPath = Game.spawns[spawnName].room.findPath(sources[i].pos,roomController.pos).length
+            if(currentPath < shortestPathLen){
+                shortestPathLen = currentPath
+                shortestPath = sources[i]
+            }
+        }
+        Game.spawns[spawnName].room.memory.upgradeSource = shortestPath;
+    }
+    
+    
+    if (Game.spawns[spawnName].room.memory.harvestSource == undefined){
+        var shortestPath = ""
+        var shortestPathLen = 1000
+        filteredList = []
+        for(i in sources){
+            if (sources[i].id != Game.spawns[spawnName].room.memory.upgradeSource.id){
+                filteredList.push(sources[i])
+            }
+        }
+        
+        for(i in filteredList){
+            currentPath = Game.spawns[spawnName].room.findPath(filteredList[i].pos,Game.spawns[spawnName].pos).length
+            if(currentPath < shortestPathLen){
+                shortestPathLen = currentPath
+                shortestPath = filteredList[i]
+            }
+        }
+        Game.spawns[spawnName].room.memory.harvestSource = shortestPath;
+    }
+    
+
     if(roads.length <= 10 && extensions.length > 2){
         buildStructures.buildRoads()
     }
     
-    var sources = Game.spawns[spawnName].room.find(FIND_SOURCES);
+    
     for(i in sources){
         var position = getSpaceAroundSources(i);
         buildStructures.buildLinks(position, sources[i].id);
