@@ -16,6 +16,18 @@ function refuel(creep){
     }
 }
 
+var roleBuilder = {
+    
+    //rework the builder class. This creep should have several actions.
+    /*
+        0) When towers don't exist and things need repaired, and those things have less than 75% health stop all actions and repair them.
+        1) When towers aren't full stop all actions and transport energy to them.
+        2) When towers are full and there are thing to build, gather energy and build them.
+        3) When towers are full and there is nothing to build gather energy and transport it to storage.
+    
+    
+    */
+    
     /** @param {Creep} creep **/
     run: function(creep) {
         
