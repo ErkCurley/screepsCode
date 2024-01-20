@@ -151,9 +151,9 @@ function makeNewCreep(role,parts){
 
 module.exports.loop = function () {
     
-    if (Game.spawns[spawnName].room.memory.linkedSources == undefined){
-        Game.spawns[spawnName].room.memory.linkedSources = [];
-    }
+    // if(Game.cpu.bucket >= 10000){
+    //     Game.cpu.generatePixel()
+    // }
     
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
     //console.log('Harvesters: ' + harvesters.length);
