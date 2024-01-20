@@ -64,40 +64,70 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
     },
 
     buildExtensions: function (){
-        if(harvesters.length >= 1){
-            
-            
-            const extensions = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
-                filter: { structureType: STRUCTURE_EXTENSION }
-            });
-            
-            const construction_sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES,{
-                filter: { structureType: STRUCTURE_EXTENSION }
-            });
-            
-            
-            if (extensions.length <= 8 && Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .9 && construction_sites.length == 0){
+        const extensions = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
+            filter: { structureType: STRUCTURE_EXTENSION }
+        });
+        
+        const construction_sites = Game.spawns[spawnName].room.find(FIND_MY_CONSTRUCTION_SITES,{
+            filter: { structureType: STRUCTURE_EXTENSION }
+        });
+        
+        roomLevel = Game.spawns[spawnName].room.controller.level
+        var spawnOffsetx = 0
+        var spawnOffsety = 0
+        
+        if(roomLevel >= 2){
+            spawnOffsetx = 3
+            spawnOffsety = 0
+            if (extensions.length < 5 && construction_sites < 5){
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx + 1, Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx - 1, Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety + 1, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety - 1, STRUCTURE_EXTENSION)
+            }else{
                 
-
-                if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 2, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
-                    console.log("Creating Extension");
-                }else if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 2, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
-                    console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
-                    console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 2, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
-                    console.log("Creating Extension");
-                }else if (Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 2, Game.spawns[spawnName].pos.y, STRUCTURE_EXTENSION) == OK){
-                    console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 2, Game.spawns[spawnName].pos.y + 2, STRUCTURE_EXTENSION) == OK){
-                    console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
-                    console.log("Creating Extension");
-                }else if(Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - 2, Game.spawns[spawnName].pos.y - 2, STRUCTURE_EXTENSION) == OK){
-                    console.log("Creating Extension");
-                }
-
-            }   
+            }
+        }
+        
+        if(roomLevel >= 3){
+            spawnOffsetx = 5
+            spawnOffsety = -1
+            if (extensions.length <= 5 && construction_sites == 0){
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx + 1, Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx - 1, Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety + 1, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety - 1, STRUCTURE_EXTENSION)
+            }else{
+                
+            }
+        }
+        
+        if(roomLevel >= 4){
+            spawnOffsetx = 0
+            spawnOffsety = -3
+            if (extensions.length <= 10 && construction_sites == 0){
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx + 1, Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx - 1, Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety + 1, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety - 1, STRUCTURE_EXTENSION)
+            }else{
+                
+            }
+            
+            spawnOffsetx = -2
+            spawnOffsety = -4
+            if (extensions.length <= 10 && construction_sites == 0){
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx + 1, Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx - 1, Game.spawns[spawnName].pos.y - spawnOffsety, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety + 1, STRUCTURE_EXTENSION)
+                Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x - spawnOffsetx,     Game.spawns[spawnName].pos.y - spawnOffsety - 1, STRUCTURE_EXTENSION)
+            }else{
+                
+            }
         }
     },
     
