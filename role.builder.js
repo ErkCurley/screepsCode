@@ -58,13 +58,14 @@ var roleBuilder = {
                 structure.structureType == STRUCTURE_SPAWN ||
                 structure.structureType == STRUCTURE_CONTAINER) &&
                 structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity();
+                structure.structureType == STRUCTURE_CONTAINER);
         }
         });
         var totalEnergyCap = 0;
         var storedEnergy = 0;
         var spawnHasEnergy = false;
         
-        
+
         for(i in energyStores){
             totalEnergyCap = energyStores[i].store.getCapacity(RESOURCE_ENERGY)
             storedEnergy = energyStores[i].store.getUsedCapacity(RESOURCE_ENERGY)
@@ -86,7 +87,7 @@ var roleBuilder = {
             creep.say('🚧 build');
         }
         
-        if(creep.memory.building != 'filling' && towers.length > 0 && towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+        if(creep.memory.building != 'filling' && towers.length > 0 && towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > towers[0].store.getCapacity(RESOURCE_ENERGY) * .5){
             creep.memory.building = 'filling';
             creep.say('⛽ fill');
         }
@@ -129,7 +130,7 @@ var roleBuilder = {
             }
         
             for(i in towers){
-                if(towers[i].store.getFreeCapacity(RESOURCE_ENERGY) > 0){
+                if(towers[i].store.getFreeCapacity(RESOURCE_ENERGY) > 0 && creep.store.getUsedCapacity(RESOURCE_ENERGY) > 0){
                     var response = creep.transfer(towers[i], RESOURCE_ENERGY);
                     if(response == ERR_NOT_IN_RANGE) {
                       creep.moveTo(towers[i]);
@@ -137,9 +138,9 @@ var roleBuilder = {
                 }
             }
         }
-
+        
         if(creep.memory.building == 'building') {
-            if(creep.store.getUsedCapacity(RESOURCE_ENERGY) < creep.store.getCapacity(RESOURCE_ENERGY) * .5 && spawnHasEnergy == true){
+            if(creep.store.getUsedCapacity(RESOURCE_ENERGY) < creep.store.getCapacity(RESOURCE_ENERGY) * .5 && spawnHasEnergy == true && storedEnergy > totalEnergyCap * .5){
                 refuel(creep)
             }
             
