@@ -67,8 +67,22 @@ var roleHarvester = {
                 
                 
             }else{
-                if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                
+                //find the nearest target and go there.
+                if(targets.length > 0){
+                    bestPath = 0;
+                    shortestPath = 100;
+                    for(i in targets){
+                        current = PathFinder.search(creep.pos,targets[i].pos)
+                        if(current.path.length < shortestPath){
+                            shortestPath = current.path.length
+                            bestPath = i
+                        }
+                    }
+                    
+                    if(creep.transfer(targets[bestPath], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(targets[bestPath], {visualizePathStyle: {stroke: '#ffffff'}});
+                    }
                 }
             }
         }

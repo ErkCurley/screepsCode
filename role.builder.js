@@ -7,13 +7,23 @@ function refuel(creep){
             structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity();
     }
     });
-
-    if(energyStores.length > 0){
-        var response = creep.withdraw(energyStores[0], RESOURCE_ENERGY);
-        if(response == ERR_NOT_IN_RANGE) {
-          creep.moveTo(energyStores[0]);
-        }    
+    
+    //find the nearest soruce and grab from it
+    
+    bestPath = 0;
+    shortestPath = 100;
+    for(i in energyStores){
+        current = PathFinder.search(creep.pos,energyStores[i].pos)
+        if(current.path.length < shortestPath){
+            shortestPath = current.path.length
+            bestPath = i
+        }
     }
+    
+    if(creep.withdraw(energyStores[bestPath], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+        creep.moveTo(energyStores[bestPath], {visualizePathStyle: {stroke: '#ffffff'}});
+    }   
+
 }
 
 var roleBuilder = {
@@ -89,12 +99,26 @@ var roleBuilder = {
         //ACTIONS
         if(creep.memory.building == 'repairing') {
             
+            //Find a way to identify a length between two points. (Pathfinder between each target and the bot) then check the length of the result.
+            
             if(creep.store.getUsedCapacity(RESOURCE_ENERGY) < creep.store.getCapacity(RESOURCE_ENERGY) * .5){
                 refuel(creep)
             }
             
-            if(creep.repair(repairtargets[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(repairtargets[0]);
+            if(repairtargets.length > 0){
+                bestPath = 0;
+                shortestPath = 100;
+                for(i in repairtargets){
+                    current = PathFinder.search(creep.pos,repairtargets[i].pos)
+                    if(current.path.length < shortestPath){
+                        shortestPath = current.path.length
+                        bestPath = i
+                    }
+                }
+                
+                if(creep.repair(repairtargets[bestPath]) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(repairtargets[bestPath], {visualizePathStyle: {stroke: '#ffffff'}});
+                }    
             }
         }
         
