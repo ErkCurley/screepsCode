@@ -56,8 +56,6 @@ var roleBuilder = {
         filter: (structure) => {
             return (structure.structureType == STRUCTURE_EXTENSION ||
                 structure.structureType == STRUCTURE_SPAWN ||
-                structure.structureType == STRUCTURE_CONTAINER) &&
-                structure.store[RESOURCE_ENERGY] >= creep.store.getCapacity();
                 structure.structureType == STRUCTURE_CONTAINER);
         }
         });
