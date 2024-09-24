@@ -2,6 +2,8 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleAttacker = require('role.attacker');
+var roleLinker = require('role.linker');
+
 
 var buildStructures = require('buildStructures')
 
@@ -32,6 +34,10 @@ function controlTowers(){
             tower.attack(closestHostiles[0]);
         }
     }
+}
+
+function controlLinks(){
+    //find the memory location of the link and process the movement of energy
 }
 
 function getRndInteger(min, max) {
@@ -94,8 +100,9 @@ function getSpaceAroundSources(selected = undefined){
 
 function makeNewCreep(role,parts,sources){
     
-        console.log("trying to spawn a:" + role)
+        // console.log("trying to spawn a:" + role)
         if (Game.spawns[spawnName].spawnCreep(parts, "test", {dryrun: true}) == ERR_NOT_ENOUGH_ENERGY){
+            // console.log("Failed to Spawn Creep")
             return
         }
     
@@ -108,8 +115,16 @@ function makeNewCreep(role,parts,sources){
             target = Game.spawns[spawnName].room.memory.upgradeSource
         }
         
-        if(role == "harvester"){
+        if(role == "harvester" || role == "linker"){
             target = Game.spawns[spawnName].room.memory.harvestSource
+        }
+        
+        if(role == "linker"){
+            Game.spawns[spawnName].spawnCreep(
+            parts, newName,{memory: {role: role, sourceTarget: target, targetX: 0, targetY: 0, targetStructure: ""}});
+        }else{
+            Game.spawns[spawnName].spawnCreep(
+            parts, newName,{memory: {role: role, sourceTarget: target}});
         }
 
         console.log('Spawning new '+role+': ' + newName + "Target: " + target);
@@ -126,6 +141,7 @@ module.exports.loop = function () {
     // }
     
     var harvesters = _.filter(Game.creeps, (creep) => creep.memory.role == 'harvester');
+    var linkers = _.filter(Game.creeps, (creep) => creep.memory.role == 'linker');
     //console.log('Harvesters: ' + harvesters.length);
     var upgraders = _.filter(Game.creeps, (creep) => creep.memory.role == 'upgrader');
     //console.log('Ugraders: ' + upgraders.length);    
@@ -143,9 +159,33 @@ module.exports.loop = function () {
                 filter: { structureType: STRUCTURE_EXTENSION }
             });
 
-    if (Game.spawns[spawnName].room.memory.linkedSources == undefined){
-        Game.spawns[spawnName].room.memory.linkedSources = [];
+    const links = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
+                filter: { structureType: STRUCTURE_LINK }
+            });
+    
+    var energyStores = Game.spawns[spawnName].room.find(FIND_STRUCTURES, {
+    filter: (structure) => {
+        return (structure.structureType == STRUCTURE_EXTENSION ||
+            structure.structureType == STRUCTURE_SPAWN ||
+            structure.structureType == STRUCTURE_CONTAINER);
     }
+    });
+    var totalEnergyCap = 0;
+    var storedEnergy = 0;
+    var spawnHasEnergy = false;
+    
+
+    for(i in energyStores){
+        totalEnergyCap = energyStores[i].store.getCapacity(RESOURCE_ENERGY)
+        storedEnergy = energyStores[i].store.getUsedCapacity(RESOURCE_ENERGY)
+    }
+    
+    if(storedEnergy > totalEnergyCap * .5){
+        spawnHasEnergy = true
+    }    
+    
+    
+    
     
     if (Game.spawns[spawnName].room.memory.upgradeSorce == undefined){
         var shortestPath = ""
@@ -198,7 +238,8 @@ module.exports.loop = function () {
     buildStructures.buildExtensions();
     // buildStructures.buildContainers();
     
-    controlTowers()
+    controlTowers();
+    controlLinks();
 
     
     //Build Creeps
@@ -209,6 +250,14 @@ module.exports.loop = function () {
             console.log('Clearing non-existing creep memory:', name);
         }
     }
+
+    if(Game.spawns[spawnName].room.memory.test){
+        delete Game.spawns[spawnName].room.memory.test;
+        console.log('Clearing test room memory:', name);
+    }
+    if(Game.spawns[spawnName].room.memory.linkedSources == undefined){
+        Game.spawns[spawnName].room.memory.linkedSources = [];
+    }
     
     //Create a script that checks the area around all the sources and doesn't make too many harvesters
     var idealHarvesters = getSpaceAroundSources() + sources.length
@@ -217,21 +266,28 @@ module.exports.loop = function () {
         //Refine the script that makes the number of ideal harvesters to also account for terrain that has added roads to access previously inaccessable sources
     
     //Do not call make new creeps if there isnt enough energy to make said creep
-    //Actually use spawn creep dry run to determien if its possible to spawn a new creep
     if( Game.spawns[spawnName].room.energyAvailable > Game.spawns[spawnName].room.energyCapacityAvailable * .5 || harvesters.length <= 2){
         // console.log("Ideal Number of Harvesters: " + idealHarvesters)
+        
+        
+        //If the links have been deployed change the number of harvesters so there is a link and a harvester.
+        
         if(harvesters.length <= idealHarvesters){
-           if(harvesters.length <= 1) {
+           if(harvesters.length < 1) {
                 makeNewCreep('harvester',[WORK,CARRY,MOVE])
+            }
+            
+            if(harvesters.length == 1) {
+                makeNewCreep('harvester',[WORK,WORK,CARRY,CARRY,MOVE,MOVE])
             }
         
             if(harvesters.length == 2) {
                 makeNewCreep('harvester',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE])
             }
             
-            if(harvesters.length == 3) {
-                makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE,MOVE,MOVE])
-            } 
+            if(harvesters.length >= 3 && harvesters.length <= 5) {
+                makeNewCreep('harvester',[WORK,WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE,MOVE,MOVE])
+            }
         }
         
         // if(harvesters.length >= 4 && harvesters.length < 6) {
@@ -242,9 +298,9 @@ module.exports.loop = function () {
             makeNewCreep('upgrader',[WORK,CARRY,MOVE])
         }
     
-        if(upgraders.length < 3 && upgraders.length >= 1  && harvesters.length >= 2) {
-            makeNewCreep('upgrader',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE])
-        }
+        // if(upgraders.length < 3 && upgraders.length >= 1  && harvesters.length >= 2) {
+        //     makeNewCreep('upgrader',[WORK,WORK,CARRY,CARRY,CARRY,CARRY,MOVE])
+        // }
         
         if(extensions.length >= 5 && attackers.length < 4 && Game.flags.AttackPoint){
             makeNewCreep('attacker',[MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK])
@@ -257,13 +313,19 @@ module.exports.loop = function () {
                 {memory: {role: 'builder', building: 'building'}});
         }
         
-        if(builders.length == 1 && harvesters.length >= 2) {
-            var newName = 'Builder' + Game.time;
-            console.log('Spawning new builder: ' + newName);
-            Game.spawns[spawnName].spawnCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE], newName,
-                {memory: {role: 'builder', building: 'building'}});
+        // if(builders.length == 1 && harvesters.length >= 2) {
+        //     var newName = 'Builder' + Game.time;
+        //     console.log('Spawning new builder: ' + newName);
+        //     Game.spawns[spawnName].spawnCreep([WORK,WORK,WORK,CARRY,CARRY,CARRY,MOVE], newName,
+        //         {memory: {role: 'builder', building: 'building'}});
+        // }
+        
+        if(links.length >= 2 && linkers.length < links.length - 1 && spawnHasEnergy){
+            var newName = 'Linker' + Game.time;
+            console.log('Spawning new linker: ' + newName);
+            makeNewCreep('linker',[WORK,WORK,WORK,CARRY,CARRY,MOVE])
         }
-    
+
         if(Game.spawns[spawnName].spawning) {
             var spawningCreep = Game.creeps[Game.spawns[spawnName].spawning.name];
             Game.spawns[spawnName].room.visual.text(
@@ -289,6 +351,9 @@ module.exports.loop = function () {
         }
         if(creep.memory.role == 'attacker') {
             roleAttacker.run(creep);
+        }
+        if(creep.memory.role == 'linker') {
+            roleLinker.run(creep);
         }
     }
 }

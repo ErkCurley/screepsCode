@@ -32,17 +32,17 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
             
             //Find the direction the spawn is from the soruce and place roads on that side.
             
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y + 1, STRUCTURE_ROAD)
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y, STRUCTURE_ROAD)
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y - 1, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y + 1, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x + 1, sources[i].pos.y - 1, STRUCTURE_ROAD)
             
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y + 1, STRUCTURE_ROAD)
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y, STRUCTURE_ROAD)
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y - 1, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y + 1, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x, sources[i].pos.y - 1, STRUCTURE_ROAD)
             
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y + 1, STRUCTURE_ROAD)
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y, STRUCTURE_ROAD)
-            Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y - 1, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y + 1, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y, STRUCTURE_ROAD)
+            // Game.spawns[spawnName].room.createConstructionSite(sources[i].pos.x - 1, sources[i].pos.y - 1, STRUCTURE_ROAD)
         }
         
         Game.spawns[spawnName].room.createConstructionSite(Game.spawns[spawnName].pos.x + 1, Game.spawns[spawnName].pos.y + 1, STRUCTURE_ROAD)
@@ -195,6 +195,8 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
         }
     },
     
+    
+    //add the location of the link to the room memory rahter than finding it every time you spawn a new creep.
     buildLinks: function(position = undefined, sourceId = undefined) {
         if (Game.spawns[spawnName].room.controller.level >= 5){
             const links = Game.spawns[spawnName].room.find(FIND_MY_STRUCTURES, {
@@ -209,6 +211,7 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
                 var spawnBuilding = Game.spawns[spawnName]
                 spawnPos = new RoomPosition(spawnBuilding.pos.x,spawnBuilding.pos.y + 1, spawnBuilding.pos.roomName);
                 Game.spawns[spawnName].room.createConstructionSite(spawnPos.x, spawnPos.y, STRUCTURE_LINK);
+                 
             }   
             
             // //First find nearest soruce and build a link there. Next check room level higher control levels and build coresponding links.
@@ -216,10 +219,16 @@ var builders = _.filter(Game.creeps, (creep) => creep.memory.role == 'builder');
             if(links.length == 1 && position != undefined && sourceId != undefined){
                 
                 sources = Game.spawns[spawnName].room.memory.linkedSources
+                if(sources == undefined){
+                    sources = [];
+                }
                 if(sources.indexOf(sourceId) == -1){
                     Game.spawns[spawnName].room.createConstructionSite(position.x, position.y, STRUCTURE_LINK);
                     sources.push(sourceId)
                     Game.spawns[spawnName].room.memory.linkedSources = sources
+                    Game.spawns[spawnName].room.memory.energyLinks = [];
+                    Game.spawns[spawnName].room.memory.energyLinks.pos.x = position.x
+                    Game.spawns[spawnName].room.memory.energyLinks.pos.y = position.y
                 }
             }
         }
