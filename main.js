@@ -98,6 +98,7 @@ function getSpaceAroundSources(selected = undefined){
 }
 
 
+
 function makeNewCreep(role,parts,sources){
     
         // console.log("trying to spawn a:" + role)
@@ -226,11 +227,13 @@ module.exports.loop = function () {
         buildStructures.buildRoads()
     }
     
-    
     for(i in sources){
-        var position = getSpaceAroundSources(i);
-        buildStructures.buildLinks(position, sources[i].id);
+        if(sources[i].id == Game.spawns[spawnName].room.memory.harvestSource.id){
+            var position = getSpaceAroundSources(i);
+            buildStructures.buildLinks(position);
+        }
     }
+
     
 
     buildStructures.buildLinks();
