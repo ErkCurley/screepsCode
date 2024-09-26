@@ -74,6 +74,7 @@ var roleBuilder = {
         }
         
         
+        creep.memory.building = 'null';
         
         if(creep.memory.building != 'store' && towers.length > 0 && towers[0].store.getFreeCapacity(RESOURCE_ENERGY) == 0){
             creep.memory.building = 'store';
@@ -85,7 +86,7 @@ var roleBuilder = {
             creep.say('🚧 build');
         }
         
-        if(creep.memory.building != 'filling' && towers.length > 0 && towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > towers[0].store.getCapacity(RESOURCE_ENERGY) * .5){
+        if(creep.memory.building != 'filling' && towers.length > 0 && towers[0].store.getFreeCapacity(RESOURCE_ENERGY) > towers[0].store.getCapacity(RESOURCE_ENERGY) * .5 && storedEnergy > totalEnergyCap * .25){
             creep.memory.building = 'filling';
             creep.say('⛽ fill');
         }
